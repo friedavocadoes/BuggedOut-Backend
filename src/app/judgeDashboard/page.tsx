@@ -29,11 +29,24 @@ export default function JudgeDashboard() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedBug, setSelectedBug] = useState(null); // Selected bug for modal
+  const [showBugModal, setShowBugModal] = useState(false); // Show/hide bug details modal
   const router = useRouter();
 
+  // Open bug details modal
+  const handleViewBug = (bug) => {
+    setSelectedBug(bug);
+    setShowBugModal(true);
+  };
+
+  // Close bug details modal
+  const handleCloseBugModal = () => {
+    setShowBugModal(false);
+    setSelectedBug(null);
+  };
   useEffect(() => {
     const token = localStorage.getItem("judgeToken");
-    if (!token) router.push("/judge-login");
+    if (!token) router.push("/judgeLogin");
 
     axios
       .get("http://localhost:5000/api/teams", {
@@ -43,7 +56,7 @@ export default function JudgeDashboard() {
         setTeams(res.data);
         setFilteredTeams(res.data);
       })
-      .catch(() => router.push("/judge-login"));
+      .catch(() => router.push("/judgeLogin"));
 
     axios
       .get("http://localhost:5000/api/teams/bugs", {
@@ -164,6 +177,41 @@ export default function JudgeDashboard() {
   return (
     <div className="p-6">
       <h2 className="text-3xl font-bold">Judge Dashboard</h2>
+
+      {/* Bug Submissions Section */}
+      <h3 className="text-2xl mt-6">Bug Submissions</h3>
+      <div className="grid grid-cols-3 gap-4">
+        {bugs.map((bug) => (
+          <div key={bug._id} className="p-4 border rounded-lg shadow-md">
+            <h4 className="text-xl font-semibold">{bug.teamName}</h4>
+            <p className="text-sm text-gray-500">
+              Submitted: {new Date(bug.submittedAt).toLocaleString()}
+            </p>
+            <Button onClick={() => handleViewBug(bug)} className="mt-2">
+              View Submission
+            </Button>
+          </div>
+        ))}
+      </div>
+
+      {/* Bug Details Modal */}
+      {showBugModal && selectedBug && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-xl">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
+            <XIcon
+              className="h-6 w-6 text-gray-500 absolute top-2 right-2 cursor-pointer"
+              onClick={handleCloseBugModal}
+            />
+            <h3 className="text-2xl font-semibold mb-4">
+              Bug Submission by {selectedBug.teamName}
+            </h3>
+            <p className="text-sm text-gray-500">
+              Submitted: {new Date(selectedBug.submittedAt).toLocaleString()}
+            </p>
+            <p className="mt-4 text-gray-800">{selectedBug.description}</p>
+          </div>
+        </div>
+      )}
 
       {/* Create Team Button */}
       <Button onClick={() => setShowCreateModal(true)} className="mt-4">
