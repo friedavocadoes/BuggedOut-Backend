@@ -1,15 +1,18 @@
 const jwt = require("jsonwebtoken");
 const Team = require("../models/Team");
 
-exports.authMiddleware = async (req, res, next) => {
-  const token = req.header("Authorization");
-  if (!token) return res.status(401).json({ message: "Access Denied" });
+module.exports = async (req, res, next) => {
+  const token =
+    req.cookies.token || req.header("Authorization")?.replace("Bearer ", "");
+  if (!token) return res.status(401).json({ message: "Unauthorized" });
 
   try {
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
-    req.team = await Team.findById(verified.id);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.team = await Team.findById(decoded.id);
+    if (!req.team) return res.status(404).json({ message: "Team not found" });
+
     next();
-  } catch (err) {
-    res.status(400).json({ message: "Invalid Token" });
+  } catch (error) {
+    res.status(401).json({ message: "Invalid token" });
   }
 };

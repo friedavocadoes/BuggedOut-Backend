@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Judge = require("../models/Judge");
 const router = express.Router();
+const auth = require("../middleware/judgeAuth");
 
 // Register a new judge
 router.post("/register", async (req, res) => {
@@ -32,24 +33,41 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
-  const judge = await Judge.findOne({ username });
-  if (!judge) {
-    return res.status(400).json({ message: "Invalid credentials" });
+  if (!username || !password) {
+    return res.status(400).json({ message: "All fields are required" });
   }
 
-  const isMatch = await bcrypt.compare(password, judge.password);
-  if (!isMatch) {
-    return res.status(400).json({ message: "Invalid credentials" });
+  try {
+    const judge = await Judge.findOne({ username });
+    if (!judge) return res.status(404).json({ message: "Judge not found" });
+
+    const isMatch = await bcrypt.compare(password, judge.password);
+    if (!isMatch)
+      return res.status(401).json({ message: "Invalid credentials" });
+
+    const token = jwt.sign({ id: judge._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.json({
+      token,
+      judge: { id: judge._id, name: judge.name, username: judge.username },
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
   }
+});
 
-  const token = jwt.sign({ id: judge._id }, process.env.JWT_SECRET, {
-    expiresIn: "7d",
-  });
+router.get("/protected", auth, async (req, res) => {
+  try {
+    const judge = await Judge.findById(req.judge.id);
+    console.log("here");
+    if (!judge) return res.status(404).json({ message: "Judge not found" });
 
-  res.json({
-    token,
-    judge: { id: judge._id, name: judge.name, username: judge.username },
-  });
+    res.json({ username: judge.username });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching judge data" });
+  }
 });
 
 module.exports = router;
