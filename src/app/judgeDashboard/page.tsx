@@ -61,7 +61,7 @@ export default function JudgeDashboard() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedBug, setSelectedBug] = useState<Bug | null>(null); // Selected bug for modal
   const [showBugModal, setShowBugModal] = useState<boolean>(false); // Show/hide bug details modal
-
+  const [sortOrder, setSortOrder] = useState<string>(""); // Sorting order state
   const router = useRouter();
 
   // Open bug details modal
@@ -225,21 +225,47 @@ export default function JudgeDashboard() {
     }
   };
 
+  const sortedBugs = [...bugs].sort((a, b) => {
+    if (sortOrder === "pending") {
+      return a.status === "pending" ? -1 : 1;
+    } else if (sortOrder === "approved") {
+      return a.status === "approved" ? -1 : 1;
+    } else if (sortOrder === "rejected") {
+      return a.status === "rejected" ? -1 : 1;
+    }
+    return 0;
+  });
+
   return (
-    <div className="p-6">
+    <div className="p-6 px-40">
       <h2 className="text-3xl font-bold">Judge Dashboard</h2>
 
       {/* Bug Submissions Section */}
-      <h3 className="text-2xl mt-6">Bug Submissions</h3>
+      <h3 className="text-2xl mt-6 mb-4">Bug Submissions</h3>
+      <div className="mb-4">
+        <label className="block text-gray-700 mb-2">Sort by Status:</label>
+        <select
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value)}
+          className="w-30 p-1 border rounded"
+        >
+          <option value="">Select Order</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
       <div className="grid grid-cols-3 gap-4">
-        {bugs.map((bug) => (
+        {sortedBugs.map((bug) => (
           <div
             key={bug._id}
             className={`p-4 border rounded-lg shadow-md ${
               bug.status === "pending"
-                ? "bg-red-100"
+                ? "bg-yellow-100"
                 : bug.status === "approved"
                 ? "bg-green-100"
+                : bug.status === "rejected"
+                ? "bg-red-200"
                 : "bg-white"
             }`}
           >
@@ -249,7 +275,10 @@ export default function JudgeDashboard() {
             </p>
             <p className="text-sm text-gray-500">Status: {bug.status}</p>
             <p className="text-sm text-gray-500">Category: {bug.category}</p>
-            <Button onClick={() => handleViewBug(bug)} className="mt-2">
+            <Button
+              onClick={() => handleViewBug(bug)}
+              className="mt-2 cursor-pointer"
+            >
               View Submission
             </Button>
           </div>
@@ -319,20 +348,22 @@ export default function JudgeDashboard() {
         </div>
       )}
 
-      {/* Create Team Button */}
-      <Button onClick={() => setShowCreateModal(true)} className="mt-4">
-        Create Team
-      </Button>
-
       {/* Team Management */}
       <h3 className="text-2xl mt-6">Teams</h3>
+      {/* Create Team Button */}
+      <Button
+        onClick={() => setShowCreateModal(true)}
+        className="mt-4 cursor-pointer"
+      >
+        + Create Team
+      </Button>
       {/* Search Bar */}
       <div className="my-4">
         <Input
           placeholder="Search Teams"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full"
+          className="w-1/4"
         />
       </div>
       <div className="grid grid-cols-3 gap-4">
@@ -349,10 +380,16 @@ export default function JudgeDashboard() {
                 </li>
               ))}
             </ul>
-            <Button onClick={() => handleToggleBlacklist(team._id)}>
+            <Button
+              onClick={() => handleToggleBlacklist(team._id)}
+              className="mt-2 cursor-pointer mr-2 rounded-xs"
+            >
               Toggle Blacklist
             </Button>
-            <Button onClick={() => handleEditTeam(team)} className="mt-2">
+            <Button
+              onClick={() => handleEditTeam(team)}
+              className="mt-2 cursor-pointer rounded-xs"
+            >
               Edit Team
             </Button>
           </div>

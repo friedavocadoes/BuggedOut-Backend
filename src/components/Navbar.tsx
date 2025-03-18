@@ -27,9 +27,9 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+    <nav className="bg-white shadow-md py-4 flex justify-between items-center px-20">
       <Link href="/" className="text-xl font-bold text-indigo-600">
-        Bug Bounty
+        BuggedOut
       </Link>
       <div className="flex gap-4 relative">
         {pathname !== "/" && (
