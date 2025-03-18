@@ -9,8 +9,6 @@ import { useAuthTokens } from "@/hooks/useAuthTokens";
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const [showUserDropdown, setShowUserDropdown] = useState(false);
-  const [showJudgeDropdown, setShowJudgeDropdown] = useState(false);
   const { userToken, judgeToken, updateTokens } = useAuthTokens();
 
   const handleLogout = () => {
@@ -28,76 +26,85 @@ export default function Navbar() {
 
   return (
     <nav className="bg-white shadow-md py-4 flex justify-between items-center px-20">
-      <Link href="/" className="text-xl font-bold text-indigo-600">
+      {/* Logo */}
+      <Link
+        href="/"
+        className="text-2xl font-bold text-indigo-600 cursor-pointer"
+      >
         BuggedOut
       </Link>
-      <div className="flex gap-4 relative">
+
+      {/* Navigation Links */}
+      <div className="flex gap-6 items-center relative">
         {pathname !== "/" && (
-          <Link href="/">
-            <Button variant="ghost">Home</Button>
+          <Link
+            href="/"
+            className="text-gray-700 hover:text-indigo-600 cursor-pointer"
+          >
+            Home
           </Link>
         )}
-        {!userToken && pathname !== "/login" && (
-          <Link href="/login">
-            <Button variant="outline">Login</Button>
-          </Link>
-        )}
-        {userToken && (
-          <div className="relative">
-            <Button
-              variant="outline"
-              onClick={() => setShowUserDropdown(!showUserDropdown)}
-            >
+
+        {/* User Dropdown */}
+        {userToken ? (
+          <div className="relative group">
+            <Button variant="outline" className="cursor-pointer">
               User
             </Button>
-            {showUserDropdown && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
-                <Link href="/dashboard">
-                  <Button variant="ghost" className="w-full text-left">
-                    Team Dashboard
-                  </Button>
-                </Link>
-                <Button
-                  variant="ghost"
-                  className="w-full text-left"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </Button>
-              </div>
-            )}
+            <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <Link
+                href="/dashboard"
+                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+              >
+                Team Dashboard
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+              >
+                Logout
+              </button>
+            </div>
           </div>
+        ) : (
+          pathname !== "/login" && (
+            <Link href="/login">
+              <Button variant="outline" className="cursor-pointer">
+                Login
+              </Button>
+            </Link>
+          )
         )}
-        {!judgeToken && pathname !== "/judgeLogin" && (
-          <Link href="/judgeLogin">
-            <Button variant="outline">Judge</Button>
-          </Link>
-        )}
-        {judgeToken && (
-          <div className="relative">
-            <Button
-              variant="outline"
-              onClick={() => setShowJudgeDropdown(!showJudgeDropdown)}
-            >
+
+        {/* Judge Dropdown */}
+        {judgeToken ? (
+          <div className="relative group">
+            <Button variant="outline" className="cursor-pointer">
               Judge
             </Button>
-            {showJudgeDropdown && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
-                <Link href="/judgeDashboard">
-                  <Button variant="ghost" className="w-full text-left">
-                    Judge Dashboard
-                  </Button>
-                </Link>
-                <Button
-                  variant="ghost"
-                  className="w-full text-left"
-                  onClick={handleJudgeLogout}
-                >
-                  Logout
-                </Button>
-              </div>
-            )}
+            <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <Link
+                href="/judgeDashboard"
+                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+              >
+                Judge Dashboard
+              </Link>
+              <button
+                onClick={handleJudgeLogout}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+              >
+                Logout
+              </button>
+            </div>
           </div>
+        ) : (
+          pathname !== "/judgeLogin" && (
+            <Link href="/judgeLogin">
+              <Button variant="outline" className="cursor-pointer">
+                Judge
+              </Button>
+            </Link>
+          )
         )}
       </div>
     </nav>

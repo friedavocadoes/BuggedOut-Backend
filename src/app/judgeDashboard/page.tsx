@@ -124,6 +124,31 @@ export default function JudgeDashboard() {
     );
   }, [searchQuery, teams]);
 
+  useEffect(() => {
+    const token = localStorage.getItem("judgeToken");
+
+    // Function to fetch bug submissions
+    const fetchBugs = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/teams/bugs", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setBugs(res.data);
+      } catch (err) {
+        console.error("Error fetching bugs:", err);
+      }
+    };
+
+    // Fetch bugs initially
+    fetchBugs();
+
+    // Set up polling to fetch bugs every 5 seconds
+    const interval = setInterval(fetchBugs, 5000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
+  }, []);
+
   // Create a new team
   const handleCreateTeam = async () => {
     const token = localStorage.getItem("judgeToken");
