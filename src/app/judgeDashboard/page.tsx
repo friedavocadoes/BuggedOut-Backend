@@ -468,13 +468,15 @@ export default function JudgeDashboard() {
 
       {/* Create Team Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-xl">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-xl backdrop-brightness-40">
+          <div className="bg-white p-6 px-20 rounded-lg shadow-lg w-1/2 h-150 flex flex-col items-center align-middle">
             <XIcon
-              className="h-6 w-6 text-gray-500 absolute top-2 right-2 cursor-pointer"
+              className="h-6 w-6 text-gray-500 ml-170 top-2 right-2 cursor-pointer"
               onClick={handleCloseModal}
             />
-            <h3 className="text-2xl font-semibold mb-4">Create Team</h3>
+            <h3 className="text-2xl font-semibold mb-4 text-center">
+              Create Team
+            </h3>
             <Input
               placeholder="Team Name"
               value={teamName}
@@ -498,43 +500,55 @@ export default function JudgeDashboard() {
               <option value="NodeJS">NodeJS</option>
               <option value="Python">Python</option>
             </select>
-            <div className="flex gap-2 mt-2">
-              <Input
-                placeholder="Member Name"
-                value={memberInput.name}
-                onChange={(e) =>
-                  setMemberInput({ ...memberInput, name: e.target.value })
-                }
-              />
-              <Input
-                placeholder="Registration Number"
-                type="number"
-                value={memberInput.reg_no}
-                onChange={(e) =>
-                  setMemberInput({
-                    ...memberInput,
-                    reg_no: Number(e.target.value),
-                  })
-                }
-              />
-              <select
-                value={memberInput.gender}
-                onChange={(e) =>
-                  setMemberInput({ ...memberInput, gender: e.target.value })
-                }
-                className="mb-2 w-full p-2 border rounded"
-              >
-                <option value="">Select Gender</option>
-                <option value="M">M</option>
-                <option value="F">F</option>
-              </select>
-              <Button onClick={handleAddMemberBefore}>Add Member</Button>
+            <h3 className="text-xl font-semibold mb-4 mt-6 text-center">
+              Member Details
+            </h3>
+            <div className="grid grid-cols-2">
+              <div className="flex flex-col gap-2 mt-2 mx-10">
+                <Input
+                  placeholder="Member Name"
+                  value={memberInput.name}
+                  onChange={(e) =>
+                    setMemberInput({ ...memberInput, name: e.target.value })
+                  }
+                />
+                <Input
+                  placeholder="Registration Number"
+                  type="number"
+                  value={memberInput.reg_no}
+                  onChange={(e) =>
+                    setMemberInput({
+                      ...memberInput,
+                      reg_no: Number(e.target.value),
+                    })
+                  }
+                />
+                <select
+                  value={memberInput.gender}
+                  onChange={(e) =>
+                    setMemberInput({ ...memberInput, gender: e.target.value })
+                  }
+                  className="mb-2 w-full p-2 border rounded"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="M">M</option>
+                  <option value="F">F</option>
+                </select>
+                <Button onClick={handleAddMemberBefore}>Add Member</Button>
+              </div>
+
+              <div className="mt-1 text-sm mx-20 mb-6">
+                <h3 className="text-lg font-semibold text-left">Member List</h3>
+                <ul className=" mt-4">
+                  {members.map((m) => (
+                    <li key={m.reg_no} className="text-md my-2 font-semibold">
+                      {m.name} ({m.gender}) - {m.reg_no}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-            <p className="mt-2 text-sm">
-              Members:{" "}
-              {members.map((m) => `${m.name} (${m.gender})`).join(", ")}
-            </p>
-            <Button onClick={handleCreateTeam} className="w-full mt-2">
+            <Button onClick={handleCreateTeam} className="w-1/2 mt-10">
               Create Team
             </Button>
           </div>
