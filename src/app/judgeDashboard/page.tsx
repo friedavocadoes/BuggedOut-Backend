@@ -52,11 +52,12 @@ export default function JudgeDashboard() {
     const token = localStorage.getItem("judgeToken");
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/bugs/${bugId}`,
+        `http://localhost:5000/api/bugs/update/${bugId}`,
         updatedBug,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setBugs(bugs.map((bug) => (bug._id === bugId ? res.data : bug)));
+
+      setBugs(bugs.map((bug) => (bug._id === bugId ? res.data.bug : bug)));
       setShowBugModal(false);
       setSelectedBug(null);
     } catch (err) {
