@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Judge = require("../models/Judge");
+const Team = require("../models/Team");
 const router = express.Router();
 const auth = require("../middleware/judgeAuth");
 
@@ -61,12 +62,32 @@ router.post("/login", async (req, res) => {
 router.get("/protected", auth, async (req, res) => {
   try {
     const judge = await Judge.findById(req.judge.id);
-    console.log("here");
     if (!judge) return res.status(404).json({ message: "Judge not found" });
 
     res.json({ username: judge.username });
   } catch (error) {
     res.status(500).json({ message: "Error fetching judge data" });
+  }
+});
+
+// Review bug submissions (Accept/Reject)
+router.put("/bug/:id", auth, async (req, res) => {
+  const { status, score } = req.body;
+  if (!status || score === undefined)
+    return res.status(400).json({ message: "Status & Score required" });
+
+  try {
+    const team = await Team.findOne({ "bugs._id": req.params.id });
+    if (!team) return res.status(404).json({ message: "Bug not found" });
+
+    const bug = team.bugs.id(req.params.id);
+    bug.status = status;
+    bug.score = score;
+    await team.save();
+
+    res.json({ message: "Bug reviewed" });
+  } catch (error) {
+    res.status(500).json({ message: "Error reviewing bug" });
   }
 });
 

@@ -1,27 +1,35 @@
 const express = require("express");
-const authMiddleware = require("../middleware/authMiddleware");
-const Bug = require("../models/Bug");
-
+const authMiddleware = require("../middleware/judgeAuth");
+const Team = require("../models/Team");
 const router = express.Router();
 
 // Submit a bug (linked to the team)
-router.post("/submit", authMiddleware, async (req, res) => {
-  const { round, category, description, steps, filename } = req.body;
+router.post("/submit", async (req, res) => {
+  const { bugForm, teamId } = req.body;
+  const { round, category, description, steps, filename } = bugForm;
 
   if (!round || !category || !description || !steps || !filename)
     return res.status(400).json({ message: "All fields are required" });
 
   try {
-    const newBug = new Bug({
-      team: req.team._id,
+    const team = await Team.findById(teamId);
+    if (!team) return res.status(404).json({ message: "Team not found" });
+
+    const newBug = {
       round,
       category,
       description,
       steps,
       filename,
-    });
+      status: "pending",
+      score: 0,
+      submittedAt: new Date(),
+    };
 
-    await newBug.save();
+    team.bugs.push(newBug);
+    console.log(team.bugs);
+    await team.save();
+
     res.json({ message: "Bug submitted successfully!" });
   } catch (err) {
     console.error(err);
@@ -29,12 +37,62 @@ router.post("/submit", authMiddleware, async (req, res) => {
   }
 });
 
-// ✅ Get all bug submissions (for judges)
+// Get all bug submissions (for judges)
 router.get("/all", async (req, res) => {
   try {
-    const bugs = await Bug.find().populate("team", "name");
+    const teams = await Team.find().populate("bugs.team", "name");
+    const bugs = teams.flatMap((team) => team.bugs);
+
     res.json(bugs);
   } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Get bugs for a specific team
+router.get("/team/:teamId", async (req, res) => {
+  const { teamId } = req.params;
+
+  try {
+    const team = await Team.findById(teamId);
+    if (!team) return res.status(404).json({ message: "Team not found" });
+
+    res.json(team.bugs);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Update bug info (score and status) by judge
+router.put("/update/:bugId", authMiddleware, async (req, res) => {
+  const { bugId } = req.params;
+  const { status, score } = req.body;
+
+  if (!status || score === undefined)
+    return res.status(400).json({ message: "Status and score are required" });
+
+  try {
+    const team = await Team.findOne({ "bugs._id": bugId });
+    if (!team) return res.status(404).json({ message: "Bug not found" });
+
+    const bug = team.bugs.id(bugId);
+    bug.status = status;
+    bug.score = score;
+
+    await team.save();
+
+    const updatedBug = {
+      ...bug.toObject(),
+      team: {
+        id: team._id,
+        name: team.name,
+      },
+    };
+
+    res.json({ message: "Bug updated successfully", bug: updatedBug });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 });
