@@ -6,37 +6,66 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { XIcon } from "@heroicons/react/solid"; // Import close icon
 
+interface Member {
+  name: string;
+  reg_no: number;
+  gender: string;
+}
+
+interface Team {
+  _id: string;
+  name: string;
+  password: string;
+  stack: string;
+  members: Member[];
+  blacklisted: boolean;
+}
+
+interface Bug {
+  _id: string;
+  round: number;
+  category: string;
+  description: string;
+  steps: string;
+  filename: string;
+  status: string;
+  score: number;
+  submittedAt: string;
+  team: {
+    id: string;
+    name: string;
+  };
+}
+
 export default function JudgeDashboard() {
-  const [teams, setTeams] = useState([]);
-  const [filteredTeams, setFilteredTeams] = useState([]);
-  const [bugs, setBugs] = useState([]);
-  const [teamName, setTeamName] = useState("");
-  const [teamPassword, setTeamPassword] = useState(""); // Password state
-  const [teamStack, setTeamStack] = useState(""); // Stack state
-  const [members, setMembers] = useState<
-    { name: string; reg_no: string; gender: string }[]
-  >([]);
-  const [memberInput, setMemberInput] = useState({
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [filteredTeams, setFilteredTeams] = useState<Team[]>([]);
+  const [bugs, setBugs] = useState<Bug[]>([]);
+  const [teamName, setTeamName] = useState<string>("");
+  const [teamPassword, setTeamPassword] = useState<string>(""); // Password state
+  const [teamStack, setTeamStack] = useState<string>(""); // Stack state
+  const [members, setMembers] = useState<Member[]>([]);
+  const [memberInput, setMemberInput] = useState<Member>({
     name: "",
-    reg_no: "",
+    reg_no: 0,
     gender: "",
   });
-  const [newMember, setNewMember] = useState({
+  const [newMember, setNewMember] = useState<Member>({
     name: "",
-    reg_no: "",
+    reg_no: 0,
     gender: "",
   });
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [selectedTeam, setSelectedTeam] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedBug, setSelectedBug] = useState(null); // Selected bug for modal
-  const [showBugModal, setShowBugModal] = useState(false); // Show/hide bug details modal
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
+  const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
+  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedBug, setSelectedBug] = useState<Bug | null>(null); // Selected bug for modal
+  const [showBugModal, setShowBugModal] = useState<boolean>(false); // Show/hide bug details modal
 
   const router = useRouter();
 
   // Open bug details modal
-  const handleViewBug = (bug) => {
+  const handleViewBug = (bug: Bug) => {
     setSelectedBug(bug);
     setShowBugModal(true);
   };
@@ -48,7 +77,7 @@ export default function JudgeDashboard() {
   };
 
   // Add this function to handle updating the bug's score and status
-  const handleUpdateBug = async (bugId, updatedBug) => {
+  const handleUpdateBug = async (bugId: string, updatedBug: Bug) => {
     const token = localStorage.getItem("judgeToken");
     try {
       const res = await axios.put(
@@ -123,7 +152,7 @@ export default function JudgeDashboard() {
   const handleAddMemberBefore = () => {
     if (!memberInput.name || !memberInput.reg_no || !memberInput.gender) return;
     setMembers([...members, memberInput]);
-    setMemberInput({ name: "", reg_no: "", gender: "" });
+    setMemberInput({ name: "", reg_no: 0, gender: "" });
   };
 
   // Add members to an existing team
@@ -142,14 +171,14 @@ export default function JudgeDashboard() {
       setFilteredTeams(
         teams.map((team) => (team._id === teamId ? res.data : team))
       );
-      setNewMember({ name: "", reg_no: "", gender: "" });
+      setNewMember({ name: "", reg_no: 0, gender: "" });
     } catch (err) {
       console.error("Error adding member:", err);
     }
   };
 
   // Open edit modal
-  const handleEditTeam = (team) => {
+  const handleEditTeam = (team: Team) => {
     setSelectedTeam(team);
     setShowEditModal(true);
   };
@@ -162,7 +191,7 @@ export default function JudgeDashboard() {
   };
 
   // Remove member from team
-  const handleRemoveMember = async (teamId, memberId) => {
+  const handleRemoveMember = async (teamId: string, memberId: number) => {
     const token = localStorage.getItem("judgeToken");
     try {
       const res = await axios.delete(
@@ -179,7 +208,7 @@ export default function JudgeDashboard() {
   };
 
   // Toggle blacklist status
-  const handleToggleBlacklist = async (teamId) => {
+  const handleToggleBlacklist = async (teamId: string) => {
     const token = localStorage.getItem("judgeToken");
     try {
       const res = await axios.put(
@@ -374,7 +403,7 @@ export default function JudgeDashboard() {
               type="number"
               value={newMember.reg_no}
               onChange={(e) =>
-                setNewMember({ ...newMember, reg_no: e.target.value })
+                setNewMember({ ...newMember, reg_no: Number(e.target.value) })
               }
               className="mb-2"
             />
@@ -445,7 +474,10 @@ export default function JudgeDashboard() {
                 type="number"
                 value={memberInput.reg_no}
                 onChange={(e) =>
-                  setMemberInput({ ...memberInput, reg_no: e.target.value })
+                  setMemberInput({
+                    ...memberInput,
+                    reg_no: Number(e.target.value),
+                  })
                 }
               />
               <select
