@@ -12,6 +12,7 @@ export default function JudgeDashboard() {
   const [bugs, setBugs] = useState([]);
   const [teamName, setTeamName] = useState("");
   const [teamPassword, setTeamPassword] = useState(""); // Password state
+  const [teamStack, setTeamStack] = useState(""); // Stack state
   const [members, setMembers] = useState<
     { name: string; reg_no: string; gender: string }[]
   >([]);
@@ -31,6 +32,7 @@ export default function JudgeDashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedBug, setSelectedBug] = useState(null); // Selected bug for modal
   const [showBugModal, setShowBugModal] = useState(false); // Show/hide bug details modal
+
   const router = useRouter();
 
   // Open bug details modal
@@ -44,6 +46,24 @@ export default function JudgeDashboard() {
     setShowBugModal(false);
     setSelectedBug(null);
   };
+
+  // Add this function to handle updating the bug's score and status
+  const handleUpdateBug = async (bugId, updatedBug) => {
+    const token = localStorage.getItem("judgeToken");
+    try {
+      const res = await axios.put(
+        `http://localhost:5000/api/bugs/${bugId}`,
+        updatedBug,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setBugs(bugs.map((bug) => (bug._id === bugId ? res.data : bug)));
+      setShowBugModal(false);
+      setSelectedBug(null);
+    } catch (err) {
+      console.error("Error updating bug:", err);
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("judgeToken");
     if (!token) router.push("/judgeLogin");
@@ -77,19 +97,20 @@ export default function JudgeDashboard() {
   // Create a new team
   const handleCreateTeam = async () => {
     const token = localStorage.getItem("judgeToken");
-    if (!teamName || !teamPassword)
-      return alert("Enter a team name and password");
+    if (!teamName || !teamPassword || !teamStack)
+      return alert("Enter a team name, password, and stack");
 
     try {
       const res = await axios.post(
         "http://localhost:5000/api/teams/create",
-        { name: teamName, password: teamPassword, members },
+        { name: teamName, password: teamPassword, stack: teamStack, members },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setTeams([...teams, res.data]);
       setFilteredTeams([...teams, res.data]);
       setTeamName("");
       setTeamPassword("");
+      setTeamStack("");
       setMembers([]);
       setShowCreateModal(false);
     } catch (err) {
@@ -182,11 +203,22 @@ export default function JudgeDashboard() {
       <h3 className="text-2xl mt-6">Bug Submissions</h3>
       <div className="grid grid-cols-3 gap-4">
         {bugs.map((bug) => (
-          <div key={bug._id} className="p-4 border rounded-lg shadow-md">
-            <h4 className="text-xl font-semibold">{bug.teamName}</h4>
+          <div
+            key={bug._id}
+            className={`p-4 border rounded-lg shadow-md ${
+              bug.status === "pending"
+                ? "bg-red-100"
+                : bug.status === "approved"
+                ? "bg-green-100"
+                : "bg-white"
+            }`}
+          >
+            <h4 className="text-xl font-semibold">{bug.team.name}</h4>
             <p className="text-sm text-gray-500">
               Submitted: {new Date(bug.submittedAt).toLocaleString()}
             </p>
+            <p className="text-sm text-gray-500">Status: {bug.status}</p>
+            <p className="text-sm text-gray-500">Category: {bug.category}</p>
             <Button onClick={() => handleViewBug(bug)} className="mt-2">
               View Submission
             </Button>
@@ -203,12 +235,56 @@ export default function JudgeDashboard() {
               onClick={handleCloseBugModal}
             />
             <h3 className="text-2xl font-semibold mb-4">
-              Bug Submission by {selectedBug.teamName}
+              Bug Submission by {selectedBug.team.name}
             </h3>
             <p className="text-sm text-gray-500">
               Submitted: {new Date(selectedBug.submittedAt).toLocaleString()}
             </p>
-            <p className="mt-4 text-gray-800">{selectedBug.description}</p>
+            <p className="mt-4 text-gray-800">Round: {selectedBug.round}</p>
+            <p className="mt-4 text-gray-800">
+              Category: {selectedBug.category}
+            </p>
+            <p className="mt-4 text-gray-800">
+              Description: {selectedBug.description}
+            </p>
+            <p className="mt-4 text-gray-800">Steps: {selectedBug.steps}</p>
+            <p className="mt-4 text-gray-800">
+              Filename: {selectedBug.filename}
+            </p>
+            <div className="mt-4">
+              <label className="block text-gray-700">Score:</label>
+              <input
+                type="number"
+                value={selectedBug.score}
+                onChange={(e) =>
+                  setSelectedBug({
+                    ...selectedBug,
+                    score: Number(e.target.value),
+                  })
+                }
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block text-gray-700">Status:</label>
+              <select
+                value={selectedBug.status}
+                onChange={(e) =>
+                  setSelectedBug({ ...selectedBug, status: e.target.value })
+                }
+                className="w-full p-2 border rounded"
+              >
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+            <Button
+              onClick={() => handleUpdateBug(selectedBug._id, selectedBug)}
+              className="w-full mt-4"
+            >
+              Update Bug
+            </Button>
           </div>
         </div>
       )}
@@ -234,6 +310,7 @@ export default function JudgeDashboard() {
           <div key={team._id} className="p-4 border rounded-lg shadow-md">
             <h4 className="text-xl font-semibold">{team.name}</h4>
             <p>Password: {team.password}</p>
+            <p>Stack: {team.stack}</p>
             <p>Members:</p>
             <ul>
               {team.members.map((m) => (
@@ -263,6 +340,7 @@ export default function JudgeDashboard() {
             <h3 className="text-2xl font-semibold mb-4">Edit Team</h3>
             <p className="mb-2">Team Name: {selectedTeam.name}</p>
             <p className="mb-2">Password: {selectedTeam.password}</p>
+            <p className="mb-2">Stack: {selectedTeam.stack}</p>
             <p className="mb-2">Members:</p>
             <ul className="mb-4">
               {selectedTeam.members.map((m) => (
@@ -310,6 +388,7 @@ export default function JudgeDashboard() {
               <option value="M">M</option>
               <option value="F">F</option>
             </select>
+
             <Button
               onClick={() => handleAddMemberAfter(selectedTeam._id)}
               className="w-full mb-2"
@@ -342,6 +421,16 @@ export default function JudgeDashboard() {
               onChange={(e) => setTeamPassword(e.target.value)}
               className="mb-2"
             />
+            <select
+              value={teamStack}
+              onChange={(e) => setTeamStack(e.target.value)}
+              className="mb-2 w-full p-2 border rounded"
+            >
+              <option value="">Select Stack</option>
+              <option value="MERN">MERN</option>
+              <option value="NodeJS">NodeJS</option>
+              <option value="Python">Python</option>
+            </select>
             <div className="flex gap-2 mt-2">
               <Input
                 placeholder="Member Name"

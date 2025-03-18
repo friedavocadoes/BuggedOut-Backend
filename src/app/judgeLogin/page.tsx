@@ -22,7 +22,8 @@ export default function JudgeLogin() {
       localStorage.setItem("judgeToken", res.data.token);
       router.push("/judgeDashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      console.log(err);
+      setError("Login failed");
     }
   };
 

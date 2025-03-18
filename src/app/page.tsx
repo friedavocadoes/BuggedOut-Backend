@@ -19,10 +19,8 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       {/* HERO SECTION */}
       <section className="flex flex-col items-center text-center py-20 bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
-        <h1 className="text-5xl font-bold">Bug Bounty Challenge</h1>
-        <p className="mt-4 text-lg">
-          Find vulnerabilities, earn points, and climb the leaderboard!
-        </p>
+        <h1 className="text-5xl font-bold">c</h1>
+        <p className="mt-4 text-lg">asd</p>
         <Button
           className="mt-6 bg-white text-indigo-600"
           onClick={() => router.push("/login")}
@@ -36,22 +34,16 @@ export default function Home() {
         <h2 className="text-3xl font-semibold text-center">How It Works</h2>
         <div className="flex flex-col md:flex-row gap-6 justify-center mt-8">
           <div className="p-6 bg-gray-100 rounded-lg shadow-md text-center">
-            <h3 className="text-xl font-bold">1. Register</h3>
-            <p className="text-gray-600 mt-2">
-              Create a team and sign up for the challenge.
-            </p>
+            <h3 className="text-xl font-bold">a</h3>
+            <p className="text-gray-600 mt-2">te</p>
           </div>
           <div className="p-6 bg-gray-100 rounded-lg shadow-md text-center">
-            <h3 className="text-xl font-bold">2. Find Bugs</h3>
-            <p className="text-gray-600 mt-2">
-              Identify security flaws in our system.
-            </p>
+            <h3 className="text-xl font-bold">b</h3>
+            <p className="text-gray-600 mt-2">fl</p>
           </div>
           <div className="p-6 bg-gray-100 rounded-lg shadow-md text-center">
-            <h3 className="text-xl font-bold">3. Submit & Earn Points</h3>
-            <p className="text-gray-600 mt-2">
-              Submit valid bugs to earn leaderboard points.
-            </p>
+            <h3 className="text-xl font-bold">s</h3>
+            <p className="text-gray-600 mt-2">poi</p>
           </div>
         </div>
       </section>

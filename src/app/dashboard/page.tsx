@@ -89,6 +89,9 @@ export default function TeamDashboard() {
       {team && (
         <div className="bg-white p-4 rounded-lg shadow-md mb-6">
           <h3 className="text-lg font-semibold">{team.name}</h3>
+          <h3 className="text-md font-medium text-gray-700">
+            Tech stack: {team.stack}
+          </h3>
           <p className="text-gray-600">Members:</p>
           <ul className="list-disc pl-5">
             {team.members.map((member: any) => (
