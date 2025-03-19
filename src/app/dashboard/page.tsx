@@ -29,6 +29,8 @@ interface Bug {
   filename: string;
   status: string;
   score: number;
+  fix: string;
+  explanation: string;
 }
 export default function TeamDashboard() {
   const [team, setTeam] = useState<Team | null>(null);
@@ -40,6 +42,8 @@ export default function TeamDashboard() {
     description: "",
     steps: "",
     filename: "",
+    fix: "",
+    explanation: "",
   });
   const [message, setMessage] = useState("");
 
@@ -77,6 +81,10 @@ export default function TeamDashboard() {
   const handleBugSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage("");
+    if (team?.blacklisted) {
+      setMessage("Your team has been blacklisted. You cannot submit bugs.");
+      return;
+    }
 
     try {
       console.log({ bugForm, teamId: team?._id });
@@ -93,6 +101,8 @@ export default function TeamDashboard() {
         description: "",
         steps: "",
         filename: "",
+        fix: "",
+        explanation: "",
       });
 
       // ✅ Refresh submissions after submitting
@@ -114,12 +124,16 @@ export default function TeamDashboard() {
       <h2 className="text-2xl font-semibold mb-4">Team Dashboard</h2>
 
       {team && (
-        <div className="bg-white p-4 rounded-lg shadow-md mb-6">
+        <div
+          className={`p-4 rounded-lg shadow-md mb-6 ${
+            team.blacklisted ? "bg-red-600" : "bg-white"
+          }`}
+        >
           <h3 className="text-lg font-semibold">{team.name}</h3>
           <h3 className="text-md font-medium text-gray-700">
             Tech stack: {team.stack}
           </h3>
-          <p className="text-gray-600">Members:</p>
+          <p className="text-gray-900">Members:</p>
           <ul className="list-disc pl-5">
             {team.members.map((member: TeamMember) => (
               <li key={member._id}>
@@ -127,14 +141,14 @@ export default function TeamDashboard() {
               </li>
             ))}
           </ul>
-          <p className="text-gray-600 mt-4">
+          <p className="text-gray-900 mt-4">
             Blacklisted: {team.blacklisted ? "Yes" : "No"}
           </p>
         </div>
       )}
 
       {/* ✅ Bug Submission Form */}
-      <div className="mt-6 bg-gray-100 p-4 rounded-md">
+      <div className="mt-6 bg-stone-100 p-4 rounded-sm shadow-md">
         <h3 className="text-lg font-semibold mb-2">Submit a Bug</h3>
         <form onSubmit={handleBugSubmit} className="space-y-3">
           <select
@@ -148,16 +162,23 @@ export default function TeamDashboard() {
             <option value="2">Round 2</option>
           </select>
 
-          <input
-            type="text"
-            placeholder="Bug Category"
+          <select
             value={bugForm.category}
             onChange={(e) =>
               setBugForm({ ...bugForm, category: e.target.value })
             }
             className="w-full p-2 border rounded"
             required
-          />
+          >
+            <option value="" disabled>
+              Select a Catergory
+            </option>
+            <option value="Functional">Functional</option>
+            <option value="Usability">Usability</option>
+            <option value="Security">Security</option>
+            <option value="Logical">Logical</option>
+            <option value="Compatibility">Compatibility</option>
+          </select>
 
           <textarea
             placeholder="Bug Description"
@@ -188,9 +209,41 @@ export default function TeamDashboard() {
             required
           />
 
+          {bugForm.round === 2 && (
+            <>
+              <textarea
+                placeholder="Suggested Fix (Code Input)"
+                value={bugForm.fix || ""}
+                onChange={(e) =>
+                  setBugForm({ ...bugForm, fix: e.target.value })
+                }
+                className="w-full p-2 border rounded"
+                required
+              />
+
+              <textarea
+                placeholder="Explain Solution"
+                value={bugForm.explanation || ""}
+                onChange={(e) =>
+                  setBugForm({
+                    ...bugForm,
+                    explanation: e.target.value,
+                  })
+                }
+                className="w-full p-2 border rounded"
+                required
+              />
+            </>
+          )}
+
           <button
             type="submit"
-            className="bg-green-500 text-white px-4 py-2 rounded-md"
+            className={`text-white px-4 py-2 rounded-sm hover:opacity-70 transition-opacity duration-200 ${
+              team?.blacklisted
+                ? "cursor-not-allowed bg-red-600"
+                : "cursor-pointer bg-green-500"
+            }`}
+            disabled={team?.blacklisted}
           >
             Submit
           </button>

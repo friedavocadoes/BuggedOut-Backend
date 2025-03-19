@@ -12,7 +12,7 @@ export default function JudgeLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -24,8 +24,7 @@ export default function JudgeLogin() {
 
   const handleLogin = async () => {
     setError("");
-    setLoading(true); // Start loading
-
+    setLoading(true);
     try {
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_BD_URL}/api/judges/login`,
@@ -76,7 +75,7 @@ export default function JudgeLogin() {
             <Button
               onClick={handleLogin}
               className="w-full bg-black text-white"
-              disabled={loading} // Disable button while loading
+              disabled={loading}
             >
               {loading ? (
                 <Loader2 className="animate-spin w-5 h-5 mr-2" />

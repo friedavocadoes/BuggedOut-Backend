@@ -4,7 +4,8 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { XIcon } from "@heroicons/react/solid"; // Import close icon
+import { XIcon } from "@heroicons/react/solid";
+import { Loader2 } from "lucide-react";
 
 interface Member {
   name: string;
@@ -30,6 +31,8 @@ interface Bug {
   filename: string;
   status: string;
   score: number;
+  fix: string;
+  explanation: string;
   submittedAt: string;
   team: {
     id: string;
@@ -62,6 +65,7 @@ export default function JudgeDashboard() {
   const [selectedBug, setSelectedBug] = useState<Bug | null>(null); // Selected bug for modal
   const [showBugModal, setShowBugModal] = useState<boolean>(false); // Show/hide bug details modal
   const [sortOrder, setSortOrder] = useState<string>(""); // Sorting order state
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   // Open bug details modal
@@ -79,6 +83,8 @@ export default function JudgeDashboard() {
   // Add this function to handle updating the bug's score and status
   const handleUpdateBug = async (bugId: string, updatedBug: Bug) => {
     const token = localStorage.getItem("judgeToken");
+    setLoading(true);
+
     try {
       const res = await axios.put(
         `${process.env.NEXT_PUBLIC_BD_URL}/api/bugs/update/${bugId}`,
@@ -92,6 +98,7 @@ export default function JudgeDashboard() {
     } catch (err) {
       console.error("Error updating bug:", err);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -155,6 +162,7 @@ export default function JudgeDashboard() {
   // Create a new team
   const handleCreateTeam = async () => {
     const token = localStorage.getItem("judgeToken");
+    setLoading(true);
     if (!teamName || !teamPassword || !teamStack)
       return alert("Enter a team name, password, and stack");
 
@@ -174,6 +182,7 @@ export default function JudgeDashboard() {
     } catch (err) {
       console.error("Error creating team:", err);
     }
+    setLoading(false);
   };
 
   // Add members before team creation
@@ -245,9 +254,6 @@ export default function JudgeDashboard() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setTeams(teams.map((team) => (team._id === teamId ? res.data : team)));
-      setFilteredTeams(
-        teams.map((team) => (team._id === teamId ? res.data : team))
-      );
     } catch (err) {
       console.error("Error toggling blacklist:", err);
     }
@@ -260,6 +266,10 @@ export default function JudgeDashboard() {
       return a.status === "approved" ? -1 : 1;
     } else if (sortOrder === "rejected") {
       return a.status === "rejected" ? -1 : 1;
+    } else if (sortOrder === "Round 1") {
+      return a.round === 1 ? -1 : 1;
+    } else if (sortOrder === "Round 2") {
+      return a.round === 2 ? -1 : 1;
     }
     return 0;
   });
@@ -281,6 +291,8 @@ export default function JudgeDashboard() {
           <option value="pending">Pending</option>
           <option value="approved">Approved</option>
           <option value="rejected">Rejected</option>
+          <option value="Round 1">Round 1</option>
+          <option value="Round 2">Round 2</option>
         </select>
       </div>
       <div className="grid grid-cols-3 gap-4">
@@ -303,6 +315,7 @@ export default function JudgeDashboard() {
             </p>
             <p className="text-sm text-gray-500">Status: {bug.status}</p>
             <p className="text-sm text-gray-500">Category: {bug.category}</p>
+            <p className="text-sm text-gray-500">Round: {bug.round}</p>
             <Button
               onClick={() => handleViewBug(bug)}
               className="mt-2 cursor-pointer"
@@ -316,7 +329,7 @@ export default function JudgeDashboard() {
       {/* Bug Details Modal */}
       {showBugModal && selectedBug && (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-xl">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full relative mx-20 p-10 ">
             <XIcon
               className="h-6 w-6 text-gray-500 absolute top-2 right-2 cursor-pointer"
               onClick={handleCloseBugModal}
@@ -338,6 +351,16 @@ export default function JudgeDashboard() {
             <p className="mt-4 text-gray-800">
               Filename: {selectedBug.filename}
             </p>
+
+            {selectedBug.round === 2 && (
+              <>
+                <p className="mt-4 text-gray-800">Fix: {selectedBug.fix}</p>
+                <p className="mt-4 text-gray-800">
+                  Explanation: {selectedBug.explanation}
+                </p>
+              </>
+            )}
+
             <div className="mt-4">
               <label className="block text-gray-700">Score:</label>
               <input
@@ -368,9 +391,9 @@ export default function JudgeDashboard() {
             </div>
             <Button
               onClick={() => handleUpdateBug(selectedBug._id, selectedBug)}
-              className="w-full mt-4"
+              className="w-full mt-4 cursor-pointer"
             >
-              Update Bug
+              Submit Grade
             </Button>
           </div>
         </div>
@@ -394,9 +417,15 @@ export default function JudgeDashboard() {
           className="w-1/4"
         />
       </div>
+
       <div className="grid grid-cols-3 gap-4">
         {filteredTeams.map((team) => (
-          <div key={team._id} className="p-4 border rounded-lg shadow-md">
+          <div
+            key={team._id}
+            className={`p-4 border rounded-lg shadow-md ${
+              team.blacklisted && "bg-red-600"
+            }`}
+          >
             <h4 className="text-xl font-semibold">{team.name}</h4>
             <p>Password: {team.password}</p>
             <p>Stack: {team.stack}</p>
@@ -488,7 +517,11 @@ export default function JudgeDashboard() {
               onClick={() => handleAddMemberAfter(selectedTeam._id)}
               className="w-full mb-2"
             >
-              Add Member
+              {loading ? (
+                <Loader2 className="animate-spin w-5 h-5 mr-2" />
+              ) : (
+                "Add Member"
+              )}
             </Button>
           </div>
         </div>
@@ -562,7 +595,12 @@ export default function JudgeDashboard() {
                   <option value="M">M</option>
                   <option value="F">F</option>
                 </select>
-                <Button onClick={handleAddMemberBefore}>Add Member</Button>
+                <Button
+                  onClick={handleAddMemberBefore}
+                  className="cursor-pointer"
+                >
+                  Add Member
+                </Button>
               </div>
 
               <div className="mt-1 text-sm mx-20 mb-6">
@@ -576,8 +614,15 @@ export default function JudgeDashboard() {
                 </ul>
               </div>
             </div>
-            <Button onClick={handleCreateTeam} className="w-1/2 mt-10">
-              Create Team
+            <Button
+              onClick={handleCreateTeam}
+              className="w-1/2 mt-10 cursor-pointer"
+            >
+              {loading ? (
+                <Loader2 className="animate-spin w-5 h-5 mr-2" />
+              ) : (
+                "Create Team"
+              )}
             </Button>
           </div>
         </div>
