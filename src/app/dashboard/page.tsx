@@ -2,7 +2,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-
+interface decodedToken {
+  id: String;
+}
 export default function TeamDashboard() {
   const [team, setTeam] = useState<any>(null);
   const [submissions, setSubmissions] = useState<any[]>([]); // ✅ Store bug submissions
@@ -20,7 +22,7 @@ export default function TeamDashboard() {
     if (typeof window !== "undefined") {
       const storedToken = localStorage.getItem("token");
       if (storedToken) {
-        const decodedToken = jwtDecode(storedToken);
+        const decodedToken: decodedToken = jwtDecode(storedToken);
         console.log(decodedToken);
         const teamId = decodedToken.id;
 

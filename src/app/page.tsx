@@ -1,19 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import axios from "axios";
-import { useEffect, useState } from "react";
 
 export default function Home() {
   const router = useRouter();
-  const [leaderboard, setLeaderboard] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/leaderboard")
-      .then((res) => setLeaderboard(res.data.slice(0, 3))) // Show Top 3
-      .catch((err) => console.error(err));
-  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -45,28 +35,6 @@ export default function Home() {
             <h3 className="text-xl font-bold">s</h3>
             <p className="text-gray-600 mt-2">poi</p>
           </div>
-        </div>
-      </section>
-
-      {/* LEADERBOARD PREVIEW */}
-      <section className="py-16 px-8 bg-gray-50">
-        <h2 className="text-3xl font-semibold text-center">Leaderboard</h2>
-        <div className="mt-8 flex flex-col items-center">
-          {leaderboard.length > 0 ? (
-            leaderboard.map((team, index) => (
-              <div
-                key={team._id}
-                className="bg-white p-4 rounded-lg shadow-md w-80 mb-4 text-center"
-              >
-                <h3 className="text-lg font-semibold">
-                  {index + 1}. {team.name}
-                </h3>
-                <p className="text-gray-600">{team.points} Points</p>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500">No data available</p>
-          )}
         </div>
       </section>
 

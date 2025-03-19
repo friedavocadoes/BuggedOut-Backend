@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import Cookies from "js-cookie";
 import { useAuthTokens } from "@/hooks/useAuthTokens";
 import {
   DropdownMenu,
@@ -17,7 +16,6 @@ export default function Navbar() {
   const { userToken, judgeToken, updateTokens } = useAuthTokens();
 
   const handleLogout = () => {
-    Cookies.remove("token");
     localStorage.removeItem("token");
     updateTokens();
     router.push("/login");
