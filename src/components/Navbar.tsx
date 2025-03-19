@@ -3,8 +3,13 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
-import { useState } from "react";
 import { useAuthTokens } from "@/hooks/useAuthTokens";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -45,27 +50,39 @@ export default function Navbar() {
           </Link>
         )}
 
+        {pathname !== "/leaderboard" && (
+          <Link
+            href="/leaderboard"
+            className="text-gray-700 hover:text-indigo-600 cursor-pointer"
+          >
+            Leaderboard
+          </Link>
+        )}
         {/* User Dropdown */}
         {userToken ? (
-          <div className="relative group">
-            <Button variant="outline" className="cursor-pointer">
-              User
-            </Button>
-            <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <Link
-                href="/dashboard"
-                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
-              >
-                Team Dashboard
-              </Link>
-              <button
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="cursor-pointer">
+                User
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem asChild>
+                <Link
+                  href="/dashboard"
+                  className="block text-gray-700 hover:bg-gray-100 cursor-pointer"
+                >
+                  Team Dashboard
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 onClick={handleLogout}
-                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+                className="text-gray-700 hover:bg-gray-100 cursor-pointer"
               >
                 Logout
-              </button>
-            </div>
-          </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         ) : (
           pathname !== "/login" && (
             <Link href="/login">
@@ -78,25 +95,29 @@ export default function Navbar() {
 
         {/* Judge Dropdown */}
         {judgeToken ? (
-          <div className="relative group">
-            <Button variant="outline" className="cursor-pointer">
-              Judge
-            </Button>
-            <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <Link
-                href="/judgeDashboard"
-                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
-              >
-                Judge Dashboard
-              </Link>
-              <button
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="cursor-pointer">
+                Judge
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem asChild>
+                <Link
+                  href="/judgeDashboard"
+                  className="block text-gray-700 hover:bg-gray-100 cursor-pointer"
+                >
+                  Judge Dashboard
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 onClick={handleJudgeLogout}
-                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+                className="text-gray-700 hover:bg-gray-100 cursor-pointer"
               >
                 Logout
-              </button>
-            </div>
-          </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         ) : (
           pathname !== "/judgeLogin" && (
             <Link href="/judgeLogin">

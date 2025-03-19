@@ -83,7 +83,7 @@ export default function TeamDashboard() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 px-40">
       <h2 className="text-2xl font-semibold mb-4">Team Dashboard</h2>
 
       {team && (
@@ -103,49 +103,6 @@ export default function TeamDashboard() {
           <p className="text-gray-600 mt-4">
             Blacklisted: {team.blacklisted ? "Yes" : "No"}
           </p>
-        </div>
-      )}
-
-      {/* ✅ Bug Submissions Section */}
-      <div className="mt-6 bg-gray-100 p-4 rounded-md">
-        <h3 className="text-lg font-semibold mb-2">Previous Bug Submissions</h3>
-        {submissions.length > 0 ? (
-          <ul className="space-y-2">
-            {submissions.map((bug: any) => (
-              <li
-                key={bug._id}
-                className="p-3 bg-white rounded-md shadow cursor-pointer hover:bg-gray-200"
-                onClick={() => setSelectedBug(bug)}
-              >
-                <p className="font-semibold">{bug.category}</p>
-                <p className="text-sm text-gray-500">Round {bug.round}</p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-500">No bug reports submitted yet.</p>
-        )}
-      </div>
-
-      {/* ✅ Show Bug Details when clicked */}
-      {selectedBug && (
-        <div className="mt-6 bg-gray-200 p-4 rounded-md">
-          <h3 className="text-lg font-semibold">Bug Details</h3>
-          <p className="font-semibold">{selectedBug.category}</p>
-          <p className="text-sm text-gray-600">Round: {selectedBug.round}</p>
-          <p className="mt-2">{selectedBug.description}</p>
-          <p className="text-sm text-gray-500 mt-2">
-            <strong>Steps to Reproduce:</strong> {selectedBug.steps}
-          </p>
-          <p className="text-sm text-gray-500 mt-2">
-            <strong>Filename:</strong> {selectedBug.filename}
-          </p>
-          <button
-            onClick={() => setSelectedBug(null)}
-            className="mt-3 bg-red-500 text-white px-4 py-2 rounded-md"
-          >
-            Close
-          </button>
         </div>
       )}
 
@@ -214,6 +171,54 @@ export default function TeamDashboard() {
 
         {message && <p className="text-red-500 mt-2">{message}</p>}
       </div>
+
+      {/* ✅ Bug Submissions Section */}
+      <div className="mt-6 bg-gray-100 p-4 rounded-md">
+        <h3 className="text-lg font-semibold mb-2">Previous Bug Submissions</h3>
+        {submissions.length > 0 ? (
+          <ul className="space-y-2">
+            {submissions.map((bug: any) => (
+              <li
+                key={bug._id}
+                className="p-3 bg-white rounded-md shadow cursor-pointer hover:bg-gray-200"
+                onClick={() => setSelectedBug(bug)}
+              >
+                <p className="font-semibold">{bug.category}</p>
+                <p className="text-sm text-gray-500">Round {bug.round}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500">No bug reports submitted yet.</p>
+        )}
+      </div>
+      {/* ✅ Show Bug Details when clicked */}
+      {selectedBug && (
+        <div className="mt-6 bg-gray-200 p-4 rounded-md">
+          <h3 className="text-lg font-semibold">Bug Details</h3>
+          <p className="font-semibold">{selectedBug.category}</p>
+          <p className="text-sm text-gray-600">Round: {selectedBug.round}</p>
+          <p className="mt-2">{selectedBug.description}</p>
+          <p className="text-sm text-gray-500 mt-2">
+            <strong>Steps to Reproduce:</strong> {selectedBug.steps}
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            <strong>Filename:</strong> {selectedBug.filename}
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            <strong>Status:</strong> {selectedBug.status}
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            <strong>Score:</strong> {selectedBug.score}
+          </p>
+          <button
+            onClick={() => setSelectedBug(null)}
+            className="mt-3 bg-red-500 text-white px-4 py-2 rounded-md"
+          >
+            Close
+          </button>
+        </div>
+      )}
     </div>
   );
 }
