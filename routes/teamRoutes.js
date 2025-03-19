@@ -110,11 +110,7 @@ router.put("/blacklist/:id", auth, async (req, res) => {
     team.blacklisted = !team.blacklisted;
     await team.save();
 
-    res.json({
-      message: `Team ${
-        team.blacklisted ? "blacklisted" : "removed from blacklist"
-      }`,
-    });
+    res.json(team);
   } catch (error) {
     res.status(500).json({ message: "Error blacklisting team" });
   }

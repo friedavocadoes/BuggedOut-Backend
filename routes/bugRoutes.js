@@ -6,7 +6,8 @@ const router = express.Router();
 // Submit a bug (linked to the team)
 router.post("/submit", async (req, res) => {
   const { bugForm, teamId } = req.body;
-  const { round, category, description, steps, filename } = bugForm;
+  const { round, category, description, steps, filename, fix, explanation } =
+    bugForm;
 
   if (!round || !category || !description || !steps || !filename)
     return res.status(400).json({ message: "All fields are required" });
@@ -22,6 +23,8 @@ router.post("/submit", async (req, res) => {
       steps,
       filename,
       status: "pending",
+      fix,
+      explanation,
       score: 0,
       submittedAt: new Date(),
     };
