@@ -29,6 +29,7 @@ router.post("/create", async (req, res) => {
   }
 });
 
+// Update stack of a team
 router.put("/:id/stack", async (req, res) => {
   try {
     const { stack } = req.body;
@@ -66,8 +67,6 @@ router.post("/:teamId/add-member", auth, async (req, res) => {
     team.members.push({ name, reg_no, gender });
 
     await team.save();
-    console.log(gender, team);
-
     res.status(200).json(team);
   } catch (error) {
     res.status(500).json({ message: "Error adding member" });
@@ -99,16 +98,6 @@ router.put("/:id", auth, async (req, res) => {
     res.json(team);
   } catch (error) {
     res.status(500).json({ message: "Error updating team" });
-  }
-});
-
-// Delete a team
-router.delete("/:id", auth, async (req, res) => {
-  try {
-    await Team.findByIdAndDelete(req.params.id);
-    res.json({ message: "Team deleted" });
-  } catch (error) {
-    res.status(500).json({ message: "Error deleting team" });
   }
 });
 
@@ -151,11 +140,23 @@ router.get("/bugs", auth, async (req, res) => {
 });
 
 // Get leaderboard (sorted by score)
-router.get("/leaderboard", auth, async (req, res) => {
+router.get("/leaderboard", async (req, res) => {
   try {
-    const teams = await Team.find().sort({ score: -1 });
-    res.json(teams);
+    const teams = await Team.find(); // Fetch all teams
+    const leaderboard = teams.map((team) => {
+      const totalScore = team.bugs.reduce((sum, bug) => sum + bug.score, 0); // Sum up scores of all bugs
+      return {
+        teamName: team.name,
+        score: totalScore,
+      };
+    });
+
+    // Sort leaderboard by score in descending order
+    leaderboard.sort((a, b) => b.score - a.score);
+
+    res.json(leaderboard);
   } catch (error) {
+    console.error("Error fetching leaderboard:", error);
     res.status(500).json({ message: "Error fetching leaderboard" });
   }
 });

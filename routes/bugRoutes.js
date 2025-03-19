@@ -27,7 +27,7 @@ router.post("/submit", async (req, res) => {
     };
 
     team.bugs.push(newBug);
-    console.log(team.bugs);
+
     await team.save();
 
     res.json({ message: "Bug submitted successfully!" });
