@@ -27,10 +27,13 @@ export default function JudgeLogin() {
     setLoading(true); // Start loading
 
     try {
-      const res = await axios.post("http://localhost:5000/api/judges/login", {
-        username,
-        password,
-      });
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BD_URL}/api/judges/login`,
+        {
+          username,
+          password,
+        }
+      );
       localStorage.setItem("judgeToken", res.data.token);
       router.push("/judgeDashboard");
     } catch (err) {

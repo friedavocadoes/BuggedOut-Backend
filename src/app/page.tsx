@@ -1,9 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
   const router = useRouter();
+  useEffect(() => {
+    console.log("id", process.env.NEXT_PUBLIC_BD_URL);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">

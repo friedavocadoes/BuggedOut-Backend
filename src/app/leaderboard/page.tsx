@@ -18,7 +18,7 @@ export default function Leaderboard() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/teams/leaderboard")
+      .get(`${process.env.NEXT_PUBLIC_BD_URL}/api/teams/leaderboard`)
       .then((res) => {
         setTeams(res.data);
         setLoading(false);

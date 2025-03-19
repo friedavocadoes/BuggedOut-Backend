@@ -81,7 +81,7 @@ export default function JudgeDashboard() {
     const token = localStorage.getItem("judgeToken");
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/bugs/update/${bugId}`,
+        `${process.env.NEXT_PUBLIC_BD_URL}/api/bugs/update/${bugId}`,
         updatedBug,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -99,7 +99,7 @@ export default function JudgeDashboard() {
     if (!token) router.push("/judgeLogin");
 
     axios
-      .get("http://localhost:5000/api/teams", {
+      .get(`${process.env.NEXT_PUBLIC_BD_URL}/api/teams`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -109,7 +109,7 @@ export default function JudgeDashboard() {
       .catch(() => router.push("/judgeLogin"));
 
     axios
-      .get("http://localhost:5000/api/teams/bugs", {
+      .get(`${process.env.NEXT_PUBLIC_BD_URL}/api/teams/bugs`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setBugs(res.data));
@@ -130,9 +130,12 @@ export default function JudgeDashboard() {
     // Function to fetch bug submissions
     const fetchBugs = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/teams/bugs", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_BD_URL}/api/teams/bugs`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setBugs(res.data);
       } catch (err) {
         console.error("Error fetching bugs:", err);
@@ -157,7 +160,7 @@ export default function JudgeDashboard() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/teams/create",
+        `${process.env.NEXT_PUBLIC_BD_URL}/api/teams/create`,
         { name: teamName, password: teamPassword, stack: teamStack, members },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -188,7 +191,7 @@ export default function JudgeDashboard() {
 
     try {
       const res = await axios.post(
-        `http://localhost:5000/api/teams/${teamId}/add-member`,
+        `${process.env.NEXT_PUBLIC_BD_URL}/api/teams/${teamId}/add-member`,
         newMember,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -220,7 +223,7 @@ export default function JudgeDashboard() {
     const token = localStorage.getItem("judgeToken");
     try {
       const res = await axios.delete(
-        `http://localhost:5000/api/teams/${teamId}/remove-member/${memberId}`,
+        `${process.env.NEXT_PUBLIC_BD_URL}/api/teams/${teamId}/remove-member/${memberId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setTeams(teams.map((team) => (team._id === teamId ? res.data : team)));
@@ -237,7 +240,7 @@ export default function JudgeDashboard() {
     const token = localStorage.getItem("judgeToken");
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/teams/blacklist/${teamId}`,
+        `${process.env.NEXT_PUBLIC_BD_URL}/api/teams/blacklist/${teamId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

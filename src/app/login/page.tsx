@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import Cookies from "js-cookie"; // For handling cookies
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -13,7 +12,7 @@ export default function LoginPage() {
 
   // Check if user is already logged in (has a valid token)
   useEffect(() => {
-    const token = Cookies.get("token") || localStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (token) {
       router.push("/dashboard");
     }
@@ -25,7 +24,7 @@ export default function LoginPage() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        `${process.env.NEXT_PUBLIC_BD_URL}/api/auth/login`,
         formData,
         { withCredentials: true } // Ensures cookies are sent/received
       );

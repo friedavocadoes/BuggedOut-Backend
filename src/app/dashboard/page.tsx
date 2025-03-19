@@ -27,7 +27,7 @@ export default function TeamDashboard() {
         const teamId = decodedToken.id;
 
         axios
-          .get(`http://localhost:5000/api/auth/me/${teamId}`, {
+          .get(`${process.env.NEXT_PUBLIC_BD_URL}/api/auth/me/${teamId}`, {
             withCredentials: true,
           })
           .then((res) => {
@@ -38,7 +38,7 @@ export default function TeamDashboard() {
 
         // ✅ Fetch previous bug submissions
         axios
-          .get(`http://localhost:5000/api/bugs/team/${teamId}`, {
+          .get(`${process.env.NEXT_PUBLIC_BD_URL}/api/bugs/team/${teamId}`, {
             withCredentials: true,
           })
           .then((res) => {
@@ -56,7 +56,7 @@ export default function TeamDashboard() {
     try {
       console.log({ bugForm, teamId: team._id });
       const res = await axios.post(
-        "http://localhost:5000/api/bugs/submit",
+        `${process.env.NEXT_PUBLIC_BD_URL}/api/bugs/submit`,
         { bugForm, teamId: team._id },
         { withCredentials: true }
       );
@@ -72,7 +72,7 @@ export default function TeamDashboard() {
 
       // ✅ Refresh submissions after submitting
       axios
-        .get(`http://localhost:5000/api/bugs/team/${team._id}`, {
+        .get(`${process.env.NEXT_PUBLIC_BD_URL}/api/bugs/team/${team._id}`, {
           withCredentials: true,
         })
         .then((res) => {
