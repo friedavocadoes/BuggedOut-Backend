@@ -253,7 +253,7 @@ export default function JudgeDashboard() {
     }
   };
 
-  const sortedBugs = [...bugs].sort((a, b) => {
+  const sortedBugs = [...bugs].sort((a) => {
     if (sortOrder === "pending") {
       return a.status === "pending" ? -1 : 1;
     } else if (sortOrder === "approved") {

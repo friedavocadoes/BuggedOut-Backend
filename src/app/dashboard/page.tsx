@@ -3,12 +3,37 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 interface decodedToken {
-  id: String;
+  id: string;
+}
+interface TeamMember {
+  _id: string;
+  name: string;
+  reg_no: string;
+  gender: string;
+}
+
+interface Team {
+  _id: string;
+  name: string;
+  stack: string;
+  members: TeamMember[];
+  blacklisted: boolean;
+}
+
+interface Bug {
+  _id: string;
+  round: number;
+  category: string;
+  description: string;
+  steps: string;
+  filename: string;
+  status: string;
+  score: number;
 }
 export default function TeamDashboard() {
-  const [team, setTeam] = useState<any>(null);
-  const [submissions, setSubmissions] = useState<any[]>([]); // ✅ Store bug submissions
-  const [selectedBug, setSelectedBug] = useState<any>(null); // ✅ Track selected bug
+  const [team, setTeam] = useState<Team | null>(null);
+  const [submissions, setSubmissions] = useState<Bug[]>([]);
+  const [selectedBug, setSelectedBug] = useState<Bug | null>(null);
   const [bugForm, setBugForm] = useState({
     round: 1,
     category: "",
@@ -54,10 +79,10 @@ export default function TeamDashboard() {
     setMessage("");
 
     try {
-      console.log({ bugForm, teamId: team._id });
+      console.log({ bugForm, teamId: team?._id });
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_BD_URL}/api/bugs/submit`,
-        { bugForm, teamId: team._id },
+        { bugForm, teamId: team?._id },
         { withCredentials: true }
       );
 
@@ -72,7 +97,7 @@ export default function TeamDashboard() {
 
       // ✅ Refresh submissions after submitting
       axios
-        .get(`${process.env.NEXT_PUBLIC_BD_URL}/api/bugs/team/${team._id}`, {
+        .get(`${process.env.NEXT_PUBLIC_BD_URL}/api/bugs/team/${team?._id}`, {
           withCredentials: true,
         })
         .then((res) => {
@@ -96,7 +121,7 @@ export default function TeamDashboard() {
           </h3>
           <p className="text-gray-600">Members:</p>
           <ul className="list-disc pl-5">
-            {team.members.map((member: any) => (
+            {team.members.map((member: TeamMember) => (
               <li key={member._id}>
                 {member.name} (Reg No: {member.reg_no}, Gender: {member.gender})
               </li>
@@ -179,7 +204,7 @@ export default function TeamDashboard() {
         <h3 className="text-lg font-semibold mb-2">Previous Bug Submissions</h3>
         {submissions.length > 0 ? (
           <ul className="space-y-2">
-            {submissions.map((bug: any) => (
+            {submissions.map((bug: Bug) => (
               <li
                 key={bug._id}
                 className="p-3 bg-white rounded-md shadow cursor-pointer hover:bg-gray-200"
