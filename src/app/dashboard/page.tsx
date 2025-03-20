@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { useRouter } from "next/navigation";
 interface decodedToken {
   id: string;
 }
@@ -46,6 +47,7 @@ export default function TeamDashboard() {
     explanation: "",
   });
   const [message, setMessage] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -74,6 +76,8 @@ export default function TeamDashboard() {
             setSubmissions(res.data);
           })
           .catch((err) => console.error("Error fetching submissions:", err));
+      } else {
+        router.push("/login");
       }
     }
   }, []);

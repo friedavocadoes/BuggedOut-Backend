@@ -23,7 +23,7 @@ export default function Home() {
         >
           <div className="text-3xl md:text-7xl font-bold dark:text-white text-center">
             <DecryptedText
-              text="Hover me for cool effect"
+              text="Find Bugs. Fix Bugs."
               speed={50}
               maxIterations={20}
               characters="ABCD1234!?"
@@ -34,10 +34,10 @@ export default function Home() {
               sequential
             />
           </div>
-          <div className="font-extralight text-base md:text-4xl dark:text-neutral-200 py-4">
+          <div className="font-extralight text-base md:text-3xl dark:text-neutral-200 py-4">
             <DecryptedText
-              text="Customize me"
-              speed={100}
+              text="Login with your Team credentials and start debugging!"
+              speed={50}
               maxIterations={20}
               characters="ABCD1234!?"
               className="revealed"
@@ -49,7 +49,7 @@ export default function Home() {
           </div>
           <button
             className="bg-black dark:bg-white rounded-full w-fit text-white dark:text-black px-4 py-2 cursor-pointer"
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.push("/login")}
           >
             Debug now
           </button>
