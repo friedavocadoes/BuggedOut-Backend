@@ -27,7 +27,7 @@ export default function Leaderboard() {
   }, []);
 
   return (
-    <div className="p-6 flex flex-col items-center bg-white min-h-screen">
+    <div className="p-6 flex flex-col items-center bg-white min-h-screen dark:bg-zinc-400 pt-40">
       {/* Leaderboard Header */}
       <Card className="w-full max-w-4xl mb-8 bg-white shadow-lg ">
         <CardHeader>

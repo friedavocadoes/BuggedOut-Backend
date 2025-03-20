@@ -1,54 +1,36 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { motion } from "motion/react";
+import React from "react";
+import { AuroraBackground } from "../components/ui/aurora-background";
 
 export default function Home() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* HERO SECTION */}
-      <section className="flex flex-col items-center text-center py-20 bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
-        <h1 className="text-5xl font-bold">c</h1>
-        <p className="mt-4 text-lg">asd</p>
-        <Button
-          className="mt-6 bg-white text-indigo-600"
-          onClick={() => router.push("/login")}
-        >
-          Get Started
-        </Button>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section className="py-16 px-8">
-        <h2 className="text-3xl font-semibold text-center">How It Works</h2>
-        <div className="flex flex-col md:flex-row gap-6 justify-center mt-8">
-          <div className="p-6 bg-gray-100 rounded-lg shadow-md text-center">
-            <h3 className="text-xl font-bold">a</h3>
-            <p className="text-gray-600 mt-2">te</p>
-          </div>
-          <div className="p-6 bg-gray-100 rounded-lg shadow-md text-center">
-            <h3 className="text-xl font-bold">b</h3>
-            <p className="text-gray-600 mt-2">fl</p>
-          </div>
-          <div className="p-6 bg-gray-100 rounded-lg shadow-md text-center">
-            <h3 className="text-xl font-bold">s</h3>
-            <p className="text-gray-600 mt-2">poi</p>
-          </div>
-        </div>
-      </section>
-
-      {/* CALL TO ACTION */}
-      <section className="py-16 px-8 bg-indigo-600 text-white text-center">
-        <h2 className="text-3xl font-semibold">Ready to Hunt Bugs?</h2>
-        <p className="mt-4">Join the challenge now and prove your skills!</p>
-        <Button
-          className="mt-6 bg-white text-indigo-600"
-          onClick={() => router.push("/login")}
-        >
-          Join Now
-        </Button>
-      </section>
-    </div>
+    // <AuroraBackground>
+    //   <motion.div
+    //     initial={{ opacity: 0.0, y: 40 }}
+    //     whileInView={{ opacity: 1, y: 0 }}
+    //     transition={{
+    //       delay: 0.3,
+    //       duration: 0.8,
+    //       ease: "easeInOut",
+    //     }}
+    //     className="relative flex flex-col gap-4 items-center justify-center px-4"
+    //   >
+    //     <div className="text-3xl md:text-7xl font-bold dark:text-white text-center">
+    //       Background lights are cool you know.
+    //     </div>
+    //     <div className="font-extralight text-base md:text-4xl dark:text-neutral-200 py-4">
+    //       And this, is chemical burn.
+    //     </div>
+    //     <button className="bg-black dark:bg-white rounded-full w-fit text-white dark:text-black px-4 py-2">
+    //       Debug now
+    //     </button>
+    //   </motion.div>
+    // </AuroraBackground>
+    <></>
   );
 }
