@@ -8,6 +8,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <title>BuggedOut | The Bug Bounty</title>
       <body>
         <Navbar />
         {children}

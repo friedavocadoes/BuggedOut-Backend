@@ -74,7 +74,7 @@ export default function JudgeLogin() {
             />
             <Button
               onClick={handleLogin}
-              className="w-full bg-black text-white"
+              className="w-full bg-black text-white cursor-pointer"
               disabled={loading}
             >
               {loading ? (

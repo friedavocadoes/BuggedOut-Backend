@@ -4,11 +4,13 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Check if user is already logged in (has a valid token)
   useEffect(() => {
@@ -20,6 +22,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     setError("");
 
     try {
@@ -40,6 +43,7 @@ export default function LoginPage() {
       setError("Login failed. Please check your credentials.");
       console.error(err);
     }
+    setLoading(false);
   };
 
   return (
@@ -66,8 +70,12 @@ export default function LoginPage() {
             className="mb-3"
           />
           {error && <p className="text-red-500">{error}</p>}
-          <Button type="submit" className="w-full">
-            Login
+          <Button type="submit" className="w-full cursor-pointer">
+            {loading ? (
+              <Loader2 className="animate-spin w-5 h-5 mr-2" />
+            ) : (
+              "Login"
+            )}
           </Button>
         </form>
       </div>

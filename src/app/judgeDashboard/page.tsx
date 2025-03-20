@@ -329,7 +329,7 @@ export default function JudgeDashboard() {
       {/* Bug Details Modal */}
       {showBugModal && selectedBug && (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-xl">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full relative mx-20 p-10 ">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full relative mx-20 p -10 ">
             <XIcon
               className="h-6 w-6 text-gray-500 absolute top-2 right-2 cursor-pointer"
               onClick={handleCloseBugModal}
