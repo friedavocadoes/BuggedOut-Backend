@@ -120,7 +120,7 @@ export default function TeamDashboard() {
   };
 
   return (
-    <div className="p-6 px-40">
+    <div className="p-6 px-40 pt-40 bg-black">
       <h2 className="text-2xl font-semibold mb-4">Team Dashboard</h2>
 
       {team && (

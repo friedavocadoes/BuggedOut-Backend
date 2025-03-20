@@ -5,6 +5,9 @@ import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -47,38 +50,56 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h2 className="text-xl font-semibold mb-4">Team Login</h2>
-        <form onSubmit={handleSubmit}>
-          <Input
-            type="text"
-            placeholder="Team Name"
-            value={formData.username}
-            onChange={(e) =>
-              setFormData({ ...formData, username: e.target.value })
-            }
-            className="mb-3"
-          />
-          <Input
-            type="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
-            className="mb-3"
-          />
-          {error && <p className="text-red-500">{error}</p>}
-          <Button type="submit" className="w-full cursor-pointer">
-            {loading ? (
-              <Loader2 className="animate-spin w-5 h-5 mr-2" />
-            ) : (
-              "Login"
-            )}
-          </Button>
-        </form>
-      </div>
-    </div>
+    <AuroraBackground className="flex justify-center items-center min-h-screen bg-gray-100">
+      <Card className="w-full max-w-md shadow-lg z-5 bg-neutral-500/20 backdrop-blur-xl border-neutral-600">
+        <CardHeader>
+          <CardTitle className="text-center text-3xl font-bold text-neutral-300">
+            Team Login
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {error && (
+            <Alert
+              variant="destructive"
+              className="mb-4 bg-red-500/10 border-red-900"
+            >
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          <div className="flex flex-col gap-4">
+            <Input
+              type="text"
+              placeholder="Team Name"
+              value={formData.username}
+              onChange={(e) =>
+                setFormData({ ...formData, username: e.target.value })
+              }
+              className="p-3 placeholder:text-neutral-400 outline-0 border-none"
+            />
+            <Input
+              type="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              className="p-3 placeholder:text-neutral-400 outline-0 border-none"
+            />
+            <Button
+              onClick={handleSubmit}
+              className="w-full bg-black text-white cursor-pointer"
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="animate-spin w-5 h-5 mr-2" />
+              ) : (
+                "Login"
+              )}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </AuroraBackground>
   );
 }

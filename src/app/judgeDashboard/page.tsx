@@ -275,7 +275,7 @@ export default function JudgeDashboard() {
   });
 
   return (
-    <div className="p-6 px-40">
+    <div className="p-6 px-40 pt-40">
       <h2 className="text-3xl font-bold">Judge Dashboard</h2>
 
       {/* Bug Submissions Section */}

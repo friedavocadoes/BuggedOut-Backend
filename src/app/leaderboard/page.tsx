@@ -10,7 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Loader2 } from "lucide-react"; // For a loading spinner
+import { Loader2 } from "lucide-react";
+import { BackgroundLines } from "@/components/ui/background-lines";
 
 export default function Leaderboard() {
   const [teams, setTeams] = useState<{ teamName: string; score: number }[]>([]);
@@ -27,16 +28,17 @@ export default function Leaderboard() {
   }, []);
 
   return (
-    <div className="p-6 flex flex-col items-center bg-white min-h-screen dark:bg-zinc-400 pt-40">
+    <BackgroundLines className="flex items-center justify-center w-full flex-col pt-20">
+      {/* <div className="p-6 flex flex-col items-center min-h-screen  pt-40"> */}
       {/* Leaderboard Header */}
-      <Card className="w-full max-w-4xl mb-8 bg-white shadow-lg ">
+      <Card className="w-full max-w-4xl mb-8 bg-neutral-100/5 z-5 backdrop-blur-sm border-zinc-600">
         <CardHeader>
-          <CardTitle className="text-center text-4xl md:text-5xl font-extrabold text-black">
-            🏆 Leaderboard 🏆
+          <CardTitle className="text-center text-2xl md:text-4xl font-extrabold text-zinc-400">
+            Leaderboard
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-center text-lg md:text-2xl text-gray-700">
+          <p className="text-center text-lg md:text-xl text-zinc-500 -mt-5">
             Celebrate the top-performing teams!
           </p>
         </CardContent>
@@ -56,42 +58,45 @@ export default function Leaderboard() {
         </div>
       ) : (
         // Leaderboard Table
-        <Card className="w-full max-w-4xl bg-white shadow-lg border border-indigo-200">
-          {/* <CardHeader>
-            <CardTitle className="text-2xl md:text-3xl font-bold text-gray-800 text-center">
-              Team Rankings
-            </CardTitle>
-          </CardHeader> */}
+        <Card className="w-full max-w-4xl bg-neutral-100/5 z-5 backdrop-blur-sm border-zinc-600">
           <CardContent>
             <Table className="text-lg md:text-xl">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-1/4 text-left">Rank</TableHead>
-                  <TableHead className="w-1/2 text-left">Team Name</TableHead>
-                  <TableHead className="w-1/4 text-right">Score</TableHead>
+                  <TableHead className="w-1/4 text-left text-neutral-400 text-2xl font-bold pb-4">
+                    {" "}
+                    Rank
+                  </TableHead>
+                  <TableHead className="w-1/2 text-left text-neutral-400 text-2xl font-bold pb-4">
+                    {" "}
+                    Team Name
+                  </TableHead>
+                  <TableHead className="w-1/4 text-right text-neutral-400 text-2xl font-bold pb-4">
+                    Score
+                  </TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody className="text-zinc-300">
                 {teams.map((team, index) => (
                   <TableRow
                     key={index}
                     className={`${
                       index === 0
-                        ? "bg-amber-300"
+                        ? "text-yellow-500"
                         : index === 1
-                        ? "bg-zinc-400"
+                        ? "text-green-500"
                         : index === 2
-                        ? "bg-stone-400"
-                        : "bg-gray-100"
+                        ? "text-teal-500"
+                        : ""
                     }`}
                   >
-                    <TableCell className="text-left font-semibold">
+                    <TableCell className="text-left font-medium py-4">
                       #{index + 1}
                     </TableCell>
-                    <TableCell className="text-left font-semibold">
+                    <TableCell className="text-left font-medium py-4">
                       {team.teamName}
                     </TableCell>
-                    <TableCell className="text-right font-semibold">
+                    <TableCell className="text-right font-medium py-4">
                       {team.score}
                     </TableCell>
                   </TableRow>
@@ -101,6 +106,7 @@ export default function Leaderboard() {
           </CardContent>
         </Card>
       )}
-    </div>
+      {/* </div> */}
+    </BackgroundLines>
   );
 }

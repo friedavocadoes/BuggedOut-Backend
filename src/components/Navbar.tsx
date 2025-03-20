@@ -1,18 +1,31 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HoveredLink, Menu, MenuItem } from "./ui/navbar-ui";
+import { useRouter, usePathname } from "next/navigation";
+import { useAuthTokens } from "@/hooks/useAuthTokens";
 import { cn } from "@/lib/utils";
-
-export function NavbarDemo() {
-  return (
-    <div className="relative w-full flex items-center justify-center">
-      <Navbar className="top-2" />
-    </div>
-  );
-}
 
 export default function Navbar({ className }: { className?: string }) {
   const [active, setActive] = useState<string | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+  const { userToken, judgeToken, updateTokens } = useAuthTokens();
+
+  useEffect(() => {
+    updateTokens();
+  }, [pathname]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    updateTokens();
+    router.push("/login");
+  };
+
+  const handleJudgeLogout = () => {
+    localStorage.removeItem("judgeToken");
+    updateTokens();
+    router.push("/judgeLogin");
+  };
   return (
     <div
       className={cn("fixed top-10 inset-x-0 max-w-2xl mx-auto z-50", className)}
@@ -38,12 +51,42 @@ export default function Navbar({ className }: { className?: string }) {
           {/* <div className="text-xl grid grid-cols-2 gap-10 p-4"> </div>*/}
           <HoveredLink href="/">Go to the Home Page</HoveredLink>
         </MenuItem>
-        <MenuItem setActive={setActive} active={active} item="Pricing">
+
+        <MenuItem
+          setActive={setActive}
+          active={active}
+          item={userToken || judgeToken ? "Dashboard" : "Login"}
+        >
           <div className="flex flex-col space-y-4 text-sm">
-            <HoveredLink href="/hobby">Hobby</HoveredLink>
-            <HoveredLink href="/individual">Individual</HoveredLink>
-            <HoveredLink href="/team">Team</HoveredLink>
-            <HoveredLink href="/enterprise">Enterprise</HoveredLink>
+            {userToken ? (
+              <>
+                <HoveredLink href="/dashboard">Submit Bugs</HoveredLink>
+                <div
+                  onClick={handleLogout}
+                  className="cursor-pointer text-white hover:text-red-700"
+                >
+                  Logout
+                </div>
+              </>
+            ) : (
+              <HoveredLink href="/login">Team Login</HoveredLink>
+            )}
+
+            {judgeToken ? (
+              <>
+                <HoveredLink href="/judgeDashboard">
+                  Judge Dashboard
+                </HoveredLink>
+                <div
+                  onClick={handleJudgeLogout}
+                  className="cursor-pointer text-white hover:text-red-700"
+                >
+                  Logout
+                </div>
+              </>
+            ) : (
+              <HoveredLink href="/judgeLogin">Judge Login</HoveredLink>
+            )}
           </div>
         </MenuItem>
       </Menu>

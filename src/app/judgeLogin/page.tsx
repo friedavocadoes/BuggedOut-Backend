@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2 } from "lucide-react"; // For the loading spinner
+import { Loader2 } from "lucide-react";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 
 export default function JudgeLogin() {
   const [username, setUsername] = useState("");
@@ -44,16 +45,19 @@ export default function JudgeLogin() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white">
-      <Card className="w-full max-w-md shadow-lg">
+    <AuroraBackground className="flex flex-col items-center justify-center min-h-screen">
+      <Card className="w-full max-w-md shadow-lg z-5 bg-neutral-500/20 backdrop-blur-xl border-neutral-600">
         <CardHeader>
-          <CardTitle className="text-center text-3xl font-bold text-black">
+          <CardTitle className="text-center text-3xl font-bold text-neutral-300">
             Judge Login
           </CardTitle>
         </CardHeader>
         <CardContent>
           {error && (
-            <Alert variant="destructive" className="mb-4">
+            <Alert
+              variant="destructive"
+              className="mb-4 bg-red-500/10 border-red-900"
+            >
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
@@ -63,14 +67,14 @@ export default function JudgeLogin() {
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="p-3"
+              className="p-3 placeholder:text-neutral-400 outline-0 border-none"
             />
             <Input
               type="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="p-3"
+              className="p-3 placeholder:text-neutral-400 outline-0 border-none"
             />
             <Button
               onClick={handleLogin}
@@ -86,6 +90,6 @@ export default function JudgeLogin() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </AuroraBackground>
   );
 }
