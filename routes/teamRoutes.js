@@ -15,14 +15,13 @@ router.post("/create", async (req, res) => {
   try {
     const newTeam = new Team({
       name,
-      members, // Now members will be an array of objects
-      score: 0,
-      blacklisted: false,
       password,
+      members,
       stack,
     });
 
     await newTeam.save();
+
     res.status(201).json(newTeam);
   } catch (error) {
     res.status(500).json({ message: "Error creating team" });
@@ -144,6 +143,7 @@ router.get("/leaderboard", async (req, res) => {
       return {
         teamName: team.name,
         score: totalScore,
+        blacklisted: team.blacklisted,
       };
     });
 
