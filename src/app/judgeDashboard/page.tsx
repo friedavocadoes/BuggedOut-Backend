@@ -156,7 +156,6 @@ export default function JudgeDashboard() {
 
   // Create a new team
   const handleCreateTeam = async () => {
-    const token = localStorage.getItem("judgeToken");
     setLoading(true);
     if (!teamName || !teamPassword || !teamStack)
       return alert("Enter a team name, password, and stack");
