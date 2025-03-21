@@ -34,22 +34,11 @@ export default function Home() {
               sequential
             />
           </div>
-          <div className="font-extralight text-base md:text-3xl dark:text-neutral-200 py-4">
+          <div className="font-extralight text-base md:text-3xl dark:text-neutral-200 py-4 text-center">
             Login with your Team credentials and start debugging!
-            {/* <DecryptedText
-              text="Login with your Team credentials and start debugging!"
-              speed={50}
-              maxIterations={5}
-              characters="ABCD1234!?"
-              className="revealed"
-              parentClassName="all-letters"
-              encryptedClassName="encrypted"
-              animateOn="hover"
-              sequential
-            /> */}
           </div>
           <button
-            className="bg-black dark:bg-white rounded-full w-fit text-white dark:text-black px-4 py-2 cursor-pointer"
+            className="bg-black dark:bg-white rounded-none hover:font-semibold h-10 hover:rounded-4xl w-fit text-white dark:text-black px-4 py-2 cursor-pointer hover:bg-emerald-900 hover:text-white transition-all duration-300"
             onClick={() => router.push("/login")}
           >
             Debug now

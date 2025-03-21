@@ -46,7 +46,7 @@ export default function Navbar({ className }: { className?: string }) {
           setActive={setActive}
           active={active}
           item="BuggedOut"
-          classnames="text-2xl mx-4 font-bold text-neutral-200 cursor-pointer"
+          classnames="text-2xl md:mx-4 font-bold text-emerald-700 cursor-pointer"
         >
           {/* <div className="text-xl grid grid-cols-2 gap-10 p-4"> </div>*/}
           <HoveredLink href="/">Go to the Home Page</HoveredLink>
