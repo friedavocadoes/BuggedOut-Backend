@@ -28,7 +28,7 @@ export default function Navbar({ className }: { className?: string }) {
   };
   return (
     <div
-      className={cn("fixed top-10 inset-x-0 max-w-2xl mx-auto z-50", className)}
+      className={cn("fixed top-6 inset-x-0 max-w-2xl mx-auto z-50", className)}
     >
       <Menu setActive={setActive}>
         <MenuItem
@@ -46,7 +46,7 @@ export default function Navbar({ className }: { className?: string }) {
           setActive={setActive}
           active={active}
           item="BuggedOut"
-          classnames="text-2xl mx-2 font-bold text-indigo-600 cursor-pointer"
+          classnames="text-2xl mx-4 font-bold text-neutral-200 cursor-pointer"
         >
           {/* <div className="text-xl grid grid-cols-2 gap-10 p-4"> </div>*/}
           <HoveredLink href="/">Go to the Home Page</HoveredLink>

@@ -14,7 +14,9 @@ import { Loader2 } from "lucide-react";
 import { BackgroundLines } from "@/components/ui/background-lines";
 
 export default function Leaderboard() {
-  const [teams, setTeams] = useState<{ teamName: string; score: number }[]>([]);
+  const [teams, setTeams] = useState<
+    { teamName: string; score: number; blacklisted: boolean }[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,10 +30,10 @@ export default function Leaderboard() {
   }, []);
 
   return (
-    <BackgroundLines className="flex items-center justify-center w-full flex-col pt-20">
+    <BackgroundLines className="flex items-center justify-center w-full flex-col h-full">
       {/* <div className="p-6 flex flex-col items-center min-h-screen  pt-40"> */}
       {/* Leaderboard Header */}
-      <Card className="w-full max-w-4xl mb-8 bg-neutral-100/5 z-5 backdrop-blur-sm border-zinc-600">
+      <Card className="w-full max-w-4xl mb-8 bg-neutral-100/5 backdrop-blur-sm border-zinc-600 mt-30">
         <CardHeader>
           <CardTitle className="text-center text-2xl md:text-4xl font-extrabold text-zinc-400">
             Leaderboard
@@ -58,7 +60,7 @@ export default function Leaderboard() {
         </div>
       ) : (
         // Leaderboard Table
-        <Card className="w-full max-w-4xl bg-neutral-100/5 z-5 backdrop-blur-sm border-zinc-600">
+        <Card className="w-full max-w-4xl bg-neutral-100/5 backdrop-blur-sm border-zinc-600 mb-10">
           <CardContent>
             <Table className="text-lg md:text-xl">
               <TableHeader>
@@ -88,7 +90,7 @@ export default function Leaderboard() {
                         : index === 2
                         ? "text-teal-500"
                         : ""
-                    }`}
+                    } ${team.blacklisted && "line-through bg-red-900"}`}
                   >
                     <TableCell className="text-left font-medium py-4">
                       #{index + 1}

@@ -101,6 +101,21 @@ export default function JudgeDashboard() {
     setLoading(false);
   };
 
+  const fetchBugs = async () => {
+    const token = localStorage.getItem("judgeToken");
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BD_URL}/api/teams/bugs`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setBugs(res.data);
+    } catch (err) {
+      console.error("Error fetching bugs:", err);
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("judgeToken");
     if (!token) router.push("/judgeLogin");
@@ -114,12 +129,7 @@ export default function JudgeDashboard() {
         setFilteredTeams(res.data);
       })
       .catch(() => router.push("/judgeLogin"));
-
-    axios
-      .get(`${process.env.NEXT_PUBLIC_BD_URL}/api/teams/bugs`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setBugs(res.data));
+    fetchBugs();
   }, []);
 
   // Filter teams based on search query
@@ -132,22 +142,7 @@ export default function JudgeDashboard() {
   }, [searchQuery, teams]);
 
   useEffect(() => {
-    const token = localStorage.getItem("judgeToken");
-
     // Function to fetch bug submissions
-    const fetchBugs = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BD_URL}/api/teams/bugs`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setBugs(res.data);
-      } catch (err) {
-        console.error("Error fetching bugs:", err);
-      }
-    };
 
     // Fetch bugs initially
     fetchBugs();
@@ -172,6 +167,7 @@ export default function JudgeDashboard() {
         { name: teamName, password: teamPassword, stack: teamStack, members },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      console.log(process.env.NEXT_PUBLIC_BD_URL);
       setTeams([...teams, res.data]);
       setFilteredTeams([...teams, res.data]);
       setTeamName("");
@@ -275,7 +271,7 @@ export default function JudgeDashboard() {
   });
 
   return (
-    <div className="p-6 px-40 pt-40">
+    <div className="p-6 px-40 pt-40 bg-neutral-100">
       <h2 className="text-3xl font-bold">Judge Dashboard</h2>
 
       {/* Bug Submissions Section */}
@@ -423,7 +419,7 @@ export default function JudgeDashboard() {
           <div
             key={team._id}
             className={`p-4 border rounded-lg shadow-md ${
-              team.blacklisted && "bg-red-600"
+              team.blacklisted && "bg-red-800/60"
             }`}
           >
             <h4 className="text-xl font-semibold">{team.name}</h4>
@@ -456,7 +452,7 @@ export default function JudgeDashboard() {
       {/* Edit Team Modal */}
       {showEditModal && selectedTeam && (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-xl">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
+          <div className="bg-neutral-300/80 p-6 rounded-lg shadow-lg w-1/2 relative mt-24">
             <XIcon
               className="h-6 w-6 text-gray-500 absolute top-2 right-2 cursor-pointer"
               onClick={handleCloseModal}

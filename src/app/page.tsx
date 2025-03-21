@@ -30,22 +30,23 @@ export default function Home() {
               className="revealed"
               parentClassName="all-letters"
               encryptedClassName="encrypted"
-              animateOn="hover"
+              animateOn="view"
               sequential
             />
           </div>
           <div className="font-extralight text-base md:text-3xl dark:text-neutral-200 py-4">
-            <DecryptedText
+            Login with your Team credentials and start debugging!
+            {/* <DecryptedText
               text="Login with your Team credentials and start debugging!"
               speed={50}
-              maxIterations={20}
+              maxIterations={5}
               characters="ABCD1234!?"
               className="revealed"
               parentClassName="all-letters"
               encryptedClassName="encrypted"
-              animateOn="view"
+              animateOn="hover"
               sequential
-            />
+            /> */}
           </div>
           <button
             className="bg-black dark:bg-white rounded-full w-fit text-white dark:text-black px-4 py-2 cursor-pointer"
