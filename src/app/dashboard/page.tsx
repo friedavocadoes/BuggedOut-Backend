@@ -307,9 +307,9 @@ export default function TeamDashboard() {
         </Card>
 
         {/* ✅ Bug Submissions Section */}
-        <Card className="mt-8 bg-gray-900 text-white p-6 w-full">
+        <Card className="mt-8 bg-teal-950/60 text-white p-6 w-full border-none">
           <CardHeader>
-            <CardTitle className="text-xl mb-4 text-center">
+            <CardTitle className="text-2xl font-bold mt-4 mb-2 text-center text-teal-500">
               Previous Bug Submissions
             </CardTitle>
           </CardHeader>
@@ -320,10 +320,23 @@ export default function TeamDashboard() {
                   {submissions.map((bug: Bug) => (
                     <li
                       key={bug._id}
-                      className="p-4 bg-black rounded shadow hover:bg-gray-800 cursor-pointer"
+                      className="p-4 bg-zinc-800/50 rounded-xl shadow hover:bg-zinc-800/90 transition-all duration-200 cursor-pointer"
                       onClick={() => setSelectedBug(bug)}
                     >
                       <p className="font-semibold text-white">{bug.category}</p>
+                      <p
+                        className={`text-right -mb-3 -mt-4 mr-2 ${
+                          bug.status == "approved"
+                            ? "text-green-600"
+                            : bug.status == "pending"
+                            ? "text-amber-400"
+                            : bug.status === "rejected"
+                            ? "text-red-700"
+                            : ""
+                        }`}
+                      >
+                        {bug.status}
+                      </p>
                       <p className="text-sm text-gray-400">Round {bug.round}</p>
                     </li>
                   ))}
@@ -341,7 +354,7 @@ export default function TeamDashboard() {
 
         {/* ✅ Show Bug Details when clicked */}
         {selectedBug && (
-          <Card className="mt-8 bg-gray-800 text-white p-6 w-full">
+          <Card className="mt-8 bg-teal-900/60 text-white p-6 w-full border-none pt-8 rounded-sm">
             <CardHeader>
               <CardTitle className="text-xl">Bug Details</CardTitle>
             </CardHeader>

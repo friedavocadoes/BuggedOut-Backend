@@ -188,6 +188,7 @@ export default function JudgeDashboard() {
 
   // Add members to an existing team
   const handleAddMemberAfter = async (teamId: string) => {
+    setLoading(true);
     const token = localStorage.getItem("judgeToken");
     if (!newMember.name || !newMember.reg_no || !newMember.gender)
       return alert("Enter all member details");
@@ -206,6 +207,7 @@ export default function JudgeDashboard() {
     } catch (err) {
       console.error("Error adding member:", err);
     }
+    setLoading(false);
   };
 
   // Open edit modal
@@ -240,6 +242,7 @@ export default function JudgeDashboard() {
 
   // Toggle blacklist status
   const handleToggleBlacklist = async (teamId: string) => {
+    setLoading(true);
     const token = localStorage.getItem("judgeToken");
     try {
       const res = await axios.put(
@@ -251,6 +254,7 @@ export default function JudgeDashboard() {
     } catch (err) {
       console.error("Error toggling blacklist:", err);
     }
+    setLoading(false);
   };
 
   const sortedBugs = [...bugs].sort((a) => {
@@ -387,7 +391,7 @@ export default function JudgeDashboard() {
               onClick={() => handleUpdateBug(selectedBug._id, selectedBug)}
               className="w-full mt-4 cursor-pointer"
             >
-              Submit Grade
+              {loading ? <Loader2 className="animate-spin" /> : "Submit Grade"}
             </Button>
           </div>
         </div>
@@ -435,7 +439,11 @@ export default function JudgeDashboard() {
               onClick={() => handleToggleBlacklist(team._id)}
               className="mt-2 cursor-pointer mr-2 rounded-xs"
             >
-              Toggle Blacklist
+              {loading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                "Toggle Blacklist"
+              )}
             </Button>
             <Button
               onClick={() => handleEditTeam(team)}

@@ -30,7 +30,7 @@ export default function Leaderboard() {
   }, []);
 
   return (
-    <BackgroundLines className="flex items-center justify-center w-full flex-col h-full">
+    <BackgroundLines className="flex items-center justify-center w-full flex-col h-full min-h-screen">
       {/* <div className="p-6 flex flex-col items-center min-h-screen  pt-40"> */}
       {/* Leaderboard Header */}
       <Card className="w-full max-w-4xl mb-8 bg-neutral-100/5 backdrop-blur-sm border-zinc-600 mt-30">

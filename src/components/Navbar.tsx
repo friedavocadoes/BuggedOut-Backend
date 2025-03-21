@@ -36,6 +36,7 @@ export default function Navbar({ className }: { className?: string }) {
           setActive={setActive}
           active={active}
           item="Leaderboard"
+          classnames="text-neutral-100 cursor-pointer font-light"
         >
           <HoveredLink href="/leaderboard">
             View your rank among other Teams
@@ -46,7 +47,7 @@ export default function Navbar({ className }: { className?: string }) {
           setActive={setActive}
           active={active}
           item="BuggedOut"
-          classnames="text-2xl md:mx-4 font-bold text-emerald-700 cursor-pointer"
+          classnames="text-2xl md:mx-4 font-bold text-emerald-800 cursor-pointer"
         >
           {/* <div className="text-xl grid grid-cols-2 gap-10 p-4"> </div>*/}
           <HoveredLink href="/">Go to the Home Page</HoveredLink>
@@ -56,6 +57,7 @@ export default function Navbar({ className }: { className?: string }) {
           setActive={setActive}
           active={active}
           item={userToken || judgeToken ? "Dashboard" : "Login"}
+          classnames="text-neutral-100 cursor-pointer font-light"
         >
           <div className="flex flex-col space-y-4 text-sm">
             {userToken ? (

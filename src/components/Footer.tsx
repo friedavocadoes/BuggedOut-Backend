@@ -2,7 +2,7 @@ import { GitHub, Instagram, Linkedin } from "react-feather/";
 
 export function Footer() {
   return (
-    <footer className="py-6 text-center text-sm text-gray-500 bg-zinc-900">
+    <footer className="py-6 text-center text-sm text-gray-500 bg-zinc-900 z-50">
       <div className="container mx-auto">
         <div className="flex flex-col items-center space-y-4">
           <div className="flex space-x-4">
