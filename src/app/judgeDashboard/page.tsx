@@ -164,8 +164,7 @@ export default function JudgeDashboard() {
     try {
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_BD_URL}/api/teams/create`,
-        { name: teamName, password: teamPassword, stack: teamStack, members },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { name: teamName, password: teamPassword, stack: teamStack, members }
       );
       console.log(process.env.NEXT_PUBLIC_BD_URL);
       setTeams([...teams, res.data]);
